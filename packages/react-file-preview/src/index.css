@@ -1,0 +1,806 @@
+@tailwind components;
+@tailwind utilities;
+
+/* 作用域内的 Tailwind CSS 变量声明 */
+.rfp-root,
+.rfp-root *,
+.rfp-root ::before,
+.rfp-root ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+  --tw-contain-size: ;
+  --tw-contain-layout: ;
+  --tw-contain-paint: ;
+  --tw-contain-style: ;
+  box-sizing: border-box;
+}
+
+/* 组件根元素基础样式 */
+.rfp-root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  text-align: left;
+}
+
+/* 作用域化 Preflight Reset —— 防止父页面 CSS 污染 */
+.rfp-root *,
+.rfp-root ::before,
+.rfp-root ::after {
+  border-width: 0;
+  border-style: solid;
+}
+
+.rfp-root p,
+.rfp-root h1,
+.rfp-root h2,
+.rfp-root h3,
+.rfp-root h4,
+.rfp-root h5,
+.rfp-root h6,
+.rfp-root ul,
+.rfp-root ol,
+.rfp-root li,
+.rfp-root dl,
+.rfp-root dt,
+.rfp-root dd,
+.rfp-root blockquote,
+.rfp-root figure,
+.rfp-root fieldset,
+.rfp-root legend {
+  margin: 0;
+  padding: 0;
+}
+
+.rfp-root h1,
+.rfp-root h2,
+.rfp-root h3,
+.rfp-root h4,
+.rfp-root h5,
+.rfp-root h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.rfp-root a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.rfp-root ul,
+.rfp-root ol {
+  list-style: none;
+}
+
+.rfp-root img,
+.rfp-root video {
+  max-width: 100%;
+  height: auto;
+}
+
+.rfp-root button,
+.rfp-root [type='button'],
+.rfp-root [type='reset'],
+.rfp-root [type='submit'] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+}
+
+.rfp-root input,
+.rfp-root textarea,
+.rfp-root select {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.rfp-root table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.rfp-root pre,
+.rfp-root code,
+.rfp-root kbd,
+.rfp-root samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 1em;
+}
+
+/* 作用域内滚动条样式 */
+.rfp-root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.rfp-root ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.rfp-root ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.rfp-root ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Light 主题滚动条 */
+.rfp-root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.rfp-root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.rfp-root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* PDF 渲染样式优化 */
+.rfp-root .react-pdf__Page {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.rfp-root .react-pdf__Page__canvas {
+  max-width: 100%;
+  height: auto !important;
+  border-radius: 8px;
+  display: block;
+  filter: brightness(0.95) contrast(1.05);
+}
+
+.rfp-root .react-pdf__Page__textContent {
+  border-radius: 8px;
+  mix-blend-mode: normal;
+}
+
+.rfp-root .react-pdf__Page__annotations {
+  border-radius: 8px;
+}
+
+.rfp-root .react-pdf__Document {
+  scroll-behavior: smooth;
+}
+
+/* 唱片旋转动画 */
+@keyframes rfp-vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 音频播放器进度条样式 */
+.rfp-root .audio-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  border-radius: 3px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.rfp-root .audio-slider:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.rfp-root .audio-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+.rfp-root .audio-slider::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+.rfp-root .audio-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: -5px;
+}
+
+.rfp-root .audio-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rfp-root .audio-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.7);
+}
+
+.rfp-root .audio-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.7);
+}
+
+.rfp-root .audio-slider::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.rfp-root .audio-slider::-moz-range-thumb:active {
+  transform: scale(1.1);
+}
+
+/* 音量控制条样式 */
+.rfp-root .volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  border-radius: 2px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.rfp-root .volume-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.rfp-root .volume-slider::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.rfp-root .volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #818cf8;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s ease;
+  margin-top: -5px;
+}
+
+.rfp-root .volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #818cf8;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s ease;
+}
+
+.rfp-root .volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 3px 8px rgba(99, 102, 241, 0.6);
+}
+
+.rfp-root .volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 3px 8px rgba(99, 102, 241, 0.6);
+}
+
+/* 垂直音量滑块样式 */
+.rfp-root .volume-slider-vertical {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.rfp-root .volume-slider-vertical::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.rfp-root .volume-slider-vertical::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.rfp-root .volume-slider-vertical::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #818cf8;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.5);
+  transition: all 0.15s ease;
+  margin-top: -6px;
+}
+
+.rfp-root .volume-slider-vertical::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #818cf8;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.5);
+  transition: all 0.15s ease;
+}
+
+.rfp-root .volume-slider-vertical::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.7);
+}
+
+.rfp-root .volume-slider-vertical::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.7);
+}
+
+.rfp-root .pptx-preview-wrapper {
+  overflow-y: initial !important;
+}
+
+/* 隐藏滚动条样式 - 用于工具栏水平滚动 */
+.rfp-root .scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rfp-root .scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* x-data-spreadsheet 样式覆盖 */
+.rfp-root .xlsx-spreadsheet-container {
+  overflow: hidden;
+}
+
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-sheet {
+  overflow: hidden;
+}
+
+/* 隐藏底部栏的添加 Sheet 按钮（添加按钮是 li:first-child 的直接子 .x-spreadsheet-icon，更多按钮在 span 内不受影响） */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-menu > li:first-child > .x-spreadsheet-icon {
+  display: none;
+}
+
+/* 禁止双击重命名 Sheet、右键菜单 */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-menu > li {
+  pointer-events: auto;
+}
+
+/* 底部栏 "更多" 下拉移到最右侧 */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-menu {
+  display: flex;
+  width: 100%;
+  overflow: visible;
+  flex-wrap: nowrap;
+}
+
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-menu > li:first-child {
+  order: 999;
+  margin-left: auto;
+}
+
+/* 底部栏 sheet tabs 样式 */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar {
+  padding: 0 8px;
+  overflow: visible;
+}
+
+/* "更多" 下拉弹窗改为向左展开，防止溢出容器 */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-dropdown.top-left .x-spreadsheet-dropdown-content {
+  left: auto;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* 隐藏底部栏的右键菜单（删除 Sheet） */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-contextmenu {
+  display: none !important;
+}
+
+/* 自定义滚动条适配深色主题 */
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-scrollbar {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-scrollbar.vertical > div,
+.rfp-root .xlsx-spreadsheet-container .x-spreadsheet-scrollbar.horizontal > div {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Light 主题 xlsx 滚动条 */
+.rfp-root[data-theme="light"] .xlsx-spreadsheet-container .x-spreadsheet-scrollbar {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.rfp-root[data-theme="light"] .xlsx-spreadsheet-container .x-spreadsheet-scrollbar.vertical > div,
+.rfp-root[data-theme="light"] .xlsx-spreadsheet-container .x-spreadsheet-scrollbar.horizontal > div {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+  .rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar {
+    padding: 0 4px;
+    font-size: 12px;
+  }
+
+  .rfp-root .xlsx-spreadsheet-container .x-spreadsheet-bottombar .x-spreadsheet-menu > li {
+    padding: 0 6px;
+    font-size: 12px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+}
+
+/* ============================================================
+ * 语义化主题 token (CSS 变量)
+ *
+ * 设计原则：renderer 不直接用 white / black / gray 字面色，
+ * 而是用 Tailwind 暴露的语义类（text-fg-primary、bg-surface-1 等），
+ * 这些语义类的真实颜色由下方变量定义。
+ *
+ * 主题切换只需替换 :root（这里是 .rfp-root）上的变量值，
+ * class 不变。
+ *
+ * 命名约定：
+ *   --fp-fg-*       文字前景（primary > secondary > tertiary > muted > disabled）
+ *   --fp-surface-*  背景表面（数字越大越突出）
+ *   --fp-line-*     边框 / 分隔线
+ *   --fp-accent-*   品牌强调色
+ *   --fp-code-*     代码块（固定暗底，豁免主题切换）
+ *   --fp-media-bg   媒体画布（固定黑底，豁免主题切换）
+ *   --fp-spinner-*  加载指示器
+ * ============================================================ */
+
+/* 默认值（dark 主题 + 未指定主题时） */
+.rfp-root {
+  /* 文字前景 */
+  --fp-fg-primary:    rgb(255 255 255 / 0.9);
+  --fp-fg-secondary:  rgb(255 255 255 / 0.75);
+  --fp-fg-tertiary:   rgb(255 255 255 / 0.6);
+  --fp-fg-muted:      rgb(255 255 255 / 0.4);
+  --fp-fg-disabled:   rgb(255 255 255 / 0.3);
+  --fp-fg-inverse:    rgb(23 23 23);
+
+  /* 表面背景层级 */
+  --fp-surface-1:        rgb(255 255 255 / 0.05);
+  --fp-surface-2:        rgb(255 255 255 / 0.1);
+  --fp-surface-3:        rgb(255 255 255 / 0.15);
+  --fp-surface-toolbar:  rgb(0 0 0 / 0.5);
+  --fp-surface-overlay:  rgb(0 0 0 / 0.8);
+  --fp-surface-nav:      rgb(0 0 0 / 0.4);
+  --fp-surface-nav-hover: rgb(0 0 0 / 0.6);
+
+  /* 边框 / 分隔 */
+  --fp-line-weak:    rgb(255 255 255 / 0.08);
+  --fp-line:         rgb(255 255 255 / 0.1);
+  --fp-line-strong:  rgb(255 255 255 / 0.2);
+  --fp-divide:       rgb(255 255 255 / 0.1);
+
+  /* 品牌强调色 */
+  --fp-accent:        rgb(99 102 241);
+  --fp-accent-hover:  rgb(129 140 248);
+  --fp-accent-soft:   rgb(99 102 241 / 0.15);
+
+  /* 代码块（跟随主题切换）
+   * Dark：VSCode Dark Plus 风格（#1e1e1e）
+   * Light：GitHub Light 风格（#f6f8fa）
+   * 同时代码高亮主题（vscDarkPlus / vs）也需在 renderer 中切换 */
+  --fp-code-bg:       #1e1e1e;
+  --fp-code-fg:       rgb(255 255 255 / 0.85);
+  --fp-code-header:   rgb(255 255 255 / 0.08);
+  --fp-media-bg:      #000;
+
+  /* loading spinner */
+  --fp-spinner-track: rgb(255 255 255 / 0.2);
+  --fp-spinner-head:  rgb(255 255 255 / 0.85);
+}
+
+/* Light 主题覆盖 */
+.rfp-root[data-theme="light"] {
+  --fp-fg-primary:    rgb(23 23 23 / 0.9);
+  --fp-fg-secondary:  rgb(23 23 23 / 0.78);
+  --fp-fg-tertiary:   rgb(23 23 23 / 0.6);
+  --fp-fg-muted:      rgb(23 23 23 / 0.45);
+  --fp-fg-disabled:   rgb(23 23 23 / 0.3);
+  --fp-fg-inverse:    rgb(255 255 255);
+
+  --fp-surface-1:        rgb(0 0 0 / 0.04);
+  --fp-surface-2:        rgb(0 0 0 / 0.06);
+  --fp-surface-3:        rgb(0 0 0 / 0.1);
+  --fp-surface-toolbar:  rgb(255 255 255 / 0.8);
+  --fp-surface-overlay:  rgb(255 255 255 / 0.92);
+  --fp-surface-nav:      rgb(255 255 255 / 0.7);
+  --fp-surface-nav-hover: rgb(255 255 255 / 0.9);
+
+  --fp-line-weak:    rgb(0 0 0 / 0.06);
+  --fp-line:         rgb(0 0 0 / 0.1);
+  --fp-line-strong:  rgb(0 0 0 / 0.18);
+  --fp-divide:       rgb(0 0 0 / 0.08);
+
+  --fp-spinner-track: rgb(0 0 0 / 0.1);
+  --fp-spinner-head:  rgb(23 23 23 / 0.85);
+
+  /* 代码块在 light 下取 GitHub Light 风格 */
+  --fp-code-bg:       #f6f8fa;
+  --fp-code-fg:       rgb(36 41 47 / 0.95);
+  --fp-code-header:   rgb(0 0 0 / 0.04);
+  /* media-bg 仍保持 #000（视频/音频画布天然黑底，不切换） */
+}
+
+/* Markdown 行内代码 / KaTeX 在 light 主题下取语义色 */
+.rfp-root[data-theme="light"] .markdown-body :where(code:not(pre code)) {
+  background: var(--fp-surface-2);
+  color: var(--fp-fg-primary);
+  border-color: var(--fp-line);
+}
+
+.rfp-root[data-theme="light"] .markdown-body :where(.katex) {
+  color: var(--fp-fg-primary);
+}
+
+/* ============================================================
+ * Shiki 代码高亮通用样式（与 vue-file-preview 同结构）
+ *
+ * 用法：renderer 把 shiki 输出包在 <div class="rfp-shiki-wrapper"> 里。
+ * 仅用于 markdown 等无行号场景。
+ * ============================================================ */
+
+.rfp-root .rfp-shiki-wrapper pre {
+  margin: 0;
+  padding: 1.5rem;
+  background: transparent !important;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+.rfp-root .rfp-shiki-wrapper code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Markdown 内代码块（无行号场景）保持紧凑 padding */
+.rfp-root .markdown-body .rfp-shiki-wrapper pre {
+  padding: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* ============================================================
+ * 双列 Grid 行号布局（Text/Xml 渲染器使用）
+ *
+ * DOM 结构：
+ *   <div class="rfp-code-block with-line-numbers [no-wrap]">
+ *     <span class="rfp-code-gutter">1</span>
+ *     <span class="rfp-code-line">...shiki HTML...</span>
+ *     <span class="rfp-code-gutter">2</span>
+ *     <span class="rfp-code-line">...</span>
+ *     ...
+ *   </div>
+ *
+ * 关键：
+ *   - Grid 两列：max-content（gutter） + 1fr（code）
+ *   - 同一逻辑行的 gutter 和 code 在同一 grid row → 高度自动同步
+ *   - border-right 画在每个 gutter cell 上，行间无 gap → 连续贯穿
+ * ============================================================ */
+
+.rfp-root .rfp-code-block {
+  background: var(--fp-code-bg);
+  color: var(--fp-code-fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow: auto;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers {
+  display: grid;
+  grid-template-columns: max-content minmax(20ch, 1fr);
+  align-content: start;
+  min-height: 100%;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers.no-wrap {
+  grid-template-columns: max-content max-content;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers > .rfp-code-gutter {
+  padding-left: 1em;
+  padding-right: 1em;
+  text-align: right;
+  border-right: 1px solid var(--fp-line);
+  color: var(--fp-fg-disabled);
+  user-select: none;
+  white-space: nowrap;
+  min-width: 3.5em;
+}
+
+/* 占位行：撑满剩余高度，让 gutter border 延伸到底部 */
+.rfp-root .rfp-code-block.with-line-numbers > .rfp-code-gutter-filler {
+  border-right: 1px solid var(--fp-line);
+  min-height: 1.5rem;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers > .rfp-code-line-filler {
+  min-height: 1.5rem;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers > .rfp-code-line {
+  padding-left: 1em;
+  padding-right: 1em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-height: 1.5em;
+  min-width: 0;
+}
+
+.rfp-root .rfp-code-block.with-line-numbers.no-wrap > .rfp-code-line {
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* 首行：上 padding；占位 filler 提供底部呼吸 */
+.rfp-root .rfp-code-block.with-line-numbers > :nth-child(-n+2) {
+  padding-top: 1.5rem;
+}
+
+/* ============================================================
+ * 文档类渲染器容器响应式 padding（Docx、PDF）
+ * 宽屏时正常 padding (1.5rem)，挤压时逐渐减小至 0
+ *
+ * 计算逻辑：
+ * - 容器宽度 >= 894px: padding = 1.5rem (24px)
+ * - 容器宽度 <= 794px: padding = 0
+ * - 794px < 容器宽度 < 894px: 线性插值
+ *
+ * 公式: padding = max(0, (容器宽度 - 794) / (894 - 794) * 1.5rem)
+ *      简化: padding = max(0, (100cqw - 794px) / 100 * 1.5rem)
+ * ============================================================ */
+.rfp-root .rfp-docx-container,
+.rfp-root .rfp-pdf-container {
+  container-type: inline-size;
+  /* 使用 clamp 实现平滑过渡：最小0，最大1.5rem，中间线性变化 */
+  padding-top: clamp(0rem, calc((100cqw - 794px) / 100 * 1.5), 1.5rem);
+  padding-bottom: clamp(0rem, calc((100cqw - 794px) / 100 * 1.5), 1.5rem);
+  padding-left: clamp(0rem, calc((100cqw - 794px) / 100 * 1), 1rem);
+  padding-right: clamp(0rem, calc((100cqw - 794px) / 100 * 1), 1rem);
+}
+
+/* PDF 页面占位符：使用 aspect-ratio 让高度随宽度等比缩放 */
+.rfp-root .rfp-pdf-page-placeholder {
+  /* A4 纸张比例约为 1:1.414 (√2) */
+  aspect-ratio: 1 / 1.414;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 400px;
+}
+
+/* 降级方案：如果浏览器不支持 container queries，使用媒体查询分段 */
+@supports not (container-type: inline-size) {
+  .rfp-root .rfp-docx-container,
+  .rfp-root .rfp-pdf-container {
+    padding: 1.5rem 1rem;
+  }
+
+  @media (max-width: 893px) {
+    .rfp-root .rfp-docx-container,
+    .rfp-root .rfp-pdf-container {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  @media (max-width: 794px) {
+    .rfp-root .rfp-docx-container,
+    .rfp-root .rfp-pdf-container {
+      padding: 0;
+    }
+  }
+}
+
+/* ─────── 全文搜索高亮 ─────── */
+.rfp-root mark.rfp-search-mark {
+  background: rgba(255, 213, 0, 0.4);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.rfp-root mark.rfp-search-active {
+  background: rgba(255, 165, 0, 0.7);
+  color: #000;
+  outline: 2px solid rgba(255, 140, 0, 0.8);
+}

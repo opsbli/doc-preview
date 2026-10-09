@@ -1,0 +1,81 @@
+{
+  "profile_version": "1.0",
+  "generated_by": "pax-init@1.0.1",
+  "generated_at": "2026-10-09T18:00:00+08:00",
+  "family": {
+    "name": "pax",
+    "version": "1.0.1（pax-init skill；家族运行时 pax-ops/versions.json 未找到，版本门放行并标注口径）"
+  },
+  "mode": "single_project",
+  "project_name": "@opsbli/file-preview-monorepo",
+  "project_description": "A modern, feature-rich file preview component library for React and Vue — Monorepo（doc-preview）",
+  "repo_path": "C:\\Users\\sam\\Documents\\codes\\doc-preview",
+  "tech_stack": [
+    { "target": "TypeScript", "evidence_file": "C:\\Users\\sam\\Documents\\codes\\doc-preview\\tsconfig.json", "extracted": { "ts_version": "^5.6.3" } },
+    { "target": "React", "evidence_file": "C:\\Users\\sam\\Documents\\codes\\doc-preview\\packages\\react-file-preview\\package.json", "extracted": { "note": "用户确认；React 组件库 @opsbli/react-file-preview v1.6.2。根层扫描仅命中 eslint-plugin-react-hooks 依赖，证据以子包为准" } },
+    { "target": "Vue", "evidence_file": "C:\\Users\\sam\\Documents\\codes\\doc-preview\\packages\\vue-file-preview\\package.json", "extracted": { "note": "用户确认；Vue 3 组件库 @opsbli/vue-file-preview v1.6.2。根层未命中 vue，证据以子包为准" } },
+    { "target": "Node.js", "evidence_file": "C:\\Users\\sam\\Documents\\codes\\doc-preview\\package.json", "extracted": { "node_engine": "未检测到", "package_manager": "pnpm", "package_manager_note": "packageManager 字段 pnpm@10.15.0 + pnpm-lock.yaml，无冲突" } },
+    { "target": "Monorepo", "evidence_file": "C:\\Users\\sam\\Documents\\codes\\doc-preview\\pnpm-workspace.yaml", "extracted": { "packages": ["packages/*"], "workspaces": ["file-preview-core", "react-file-preview", "vue-file-preview", "example", "vue-example", "docs"] } },
+    { "target": "Java / Maven", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Spring Boot", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Java / Gradle", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "RuoYi 框架", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Vite", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Element Plus", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Ant Design", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Pinia / Vuex", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "UnoCSS / Tailwind", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Go", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Python", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "Docker", "evidence_file": null, "extracted": "未检测到" },
+    { "target": "CI/CD", "evidence_file": null, "extracted": "未检测到" }
+  ],
+  "directory_structure": {
+    "root_files": ["AGENTS.md", "CLAUDE.md", "context7.json", "CONTRIBUTING.md", "CONTRIBUTING.zh-CN.md", "eslint.config.js", "LICENSE", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "README.md", "README.zh-CN.md", "tsconfig.json", "tsconfig.node.json"],
+    "key_directories": ["packages", "scripts", "tests", ".agents"],
+    "entry_points": []
+  },
+  "coding_standards": {
+    "language": "TypeScript",
+    "framework": "React + Vue 3 组件库",
+    "naming_convention": "PascalCase 组件名；camelCase 变量与函数；包按 @opsbli/<scope> 拆分（react-file-preview / vue-file-preview / file-preview-core）",
+    "layering_pattern": "monorepo：file-preview-core（通用核心）/ react-file-preview / vue-file-preview / example / vue-example / docs",
+    "linter": "ESLint 9 flat config（@typescript-eslint + react-hooks）；packages 下 ts,tsx；--report-unused-disable-directives --max-warnings 0",
+    "formatter": "未检测到（无 prettier 配置）"
+  },
+  "build_commands": {
+    "build": "pnpm run build",
+    "test": "pnpm run test",
+    "lint": "pnpm run lint"
+  },
+  "standards_doc": {
+    "path": "",
+    "status": "absent",
+    "consumption_rule": "L1 规划 / 执行 / 评审层 MUST 完整阅读该文件后逐条对照执行；profile 仅是结构化摘要，与该文件冲突时以该文件为准",
+    "sections": [],
+    "skip_reason": "未检测到项目级规范文档（无 docs/agents/project-standards.md、CONTEXT.md、docs/adr）"
+  },
+  "db_conventions": {
+    "source": "generic",
+    "code_generator": "未检测到",
+    "tenant_fields": [],
+    "audit_fields": [
+      { "name": "id", "type": "BIGINT", "note": "主键" },
+      { "name": "created_at", "type": "DATETIME", "note": "创建时间" },
+      { "name": "updated_at", "type": "DATETIME", "note": "更新时间" }
+    ],
+    "logical_delete": { "name": "deleted_at", "type": "DATETIME", "note": "逻辑删除时间" },
+    "skip_reason": "未检测到代码生成器，降级为通用规范"
+  },
+  "frontend": {
+    "path": "",
+    "framework": "React + Vue 3",
+    "ui_library": "未检测到",
+    "css_framework": "未检测到",
+    "state_management": "未检测到",
+    "package_manager": "pnpm",
+    "package_manager_note": "pnpm@10.15.0（packageManager 字段 + pnpm-lock.yaml），无 lock 冲突"
+  },
+  "artifacts_dir": ".pax",
+  "risk_sensitive": false
+}

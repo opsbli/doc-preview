@@ -1,0 +1,319 @@
+# Doc Preview
+
+[![npm version](https://img.shields.io/npm/v/@opsbli/react-file-preview.svg)](https://www.npmjs.com/package/@opsbli/react-file-preview)
+[![license](https://img.shields.io/npm/l/@opsbli/react-file-preview.svg)](https://github.com/opsbli/doc-preview/blob/master/LICENSE)
+[![react-file-preview downloads](https://img.shields.io/npm/dm/@opsbli/react-file-preview.svg?label=@opsbli/react-file-preview)](https://www.npmjs.com/package/@opsbli/react-file-preview)
+[![vue-file-preview downloads](https://img.shields.io/npm/dm/@opsbli/vue-file-preview.svg?label=@opsbli/vue-file-preview)](https://www.npmjs.com/package/@opsbli/vue-file-preview)
+
+[English](./README.md) | 简体中文
+
+现代化、功能丰富的文件预览组件库，**同时支持 React 和 Vue 框架**。通过共享核心和框架专用绑定，实现图片、视频、音频、PDF、Office 文档（Word、Excel、PowerPoint）、Markdown 和代码文件的预览。
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/2728.svg" width="24" height="24" alt="✨" /> 核心特性
+
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f3a8.svg" width="20" height="20" alt="🎨" /> **现代化 UI** — 简洁现代的界面设计，流畅动画
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4c1.svg" width="20" height="20" alt="📁" /> **20+ 格式支持** — 图片、视频、音频、PDF、Office、代码、电子书等
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1fa9f.svg" width="20" height="20" alt="🪟" /> **双模式显示** — 全屏弹窗或内嵌容器两种模式
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f3af.svg" width="20" height="20" alt="🎯" /> **多框架支持** — React 和 Vue 共享核心逻辑，API 一致
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/2328.svg" width="20" height="20" alt="⌨️" /> **完整交互** — 键盘导航、拖放上传、缩放旋转、自定义播放器
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f310.svg" width="24" height="24" alt="🌐" /> 快速导航
+
+<table>
+<tr>
+  <td width="33%"><strong><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4d6.svg" width="20" height="20" alt="📖" /> 文档与演示</strong></td>
+  <td width="33%"><strong><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4e6.svg" width="20" height="20" alt="📦" /> 包与资源</strong></td>
+  <td width="33%"><strong><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f6e0.svg" width="20" height="20" alt="🛠️" /> 开发与贡献</strong></td>
+</tr>
+<tr>
+  <td>
+    • <a href="https://opsbli/doc-preview/docs/">完整文档</a><br>
+    • <a href="https://opsbli/doc-preview/">React 在线演示</a><br>
+    • <a href="https://opsbli/doc-preview/vue/">Vue 在线演示</a>
+  </td>
+  <td>
+    • <a href="https://www.npmjs.com/package/@opsbli/react-file-preview">React 包</a><br>
+    • <a href="https://www.npmjs.com/package/@opsbli/vue-file-preview">Vue 包</a><br>
+    • <a href="https://github.com/opsbli/doc-preview/issues">问题反馈</a>
+  </td>
+  <td>
+    • <a href="#-项目架构">Monorepo 结构</a><br>
+    • <a href="#-开发指南">开发命令</a><br>
+    • <a href="https://github.com/opsbli/doc-preview/blob/master/CONTRIBUTING.md">贡献指南</a>
+  </td>
+</tr>
+</table>
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f3af.svg" width="20" height="20" alt="🎯" /> 快速开始
+
+### React
+
+```bash
+npm install @opsbli/react-file-preview
+```
+
+```tsx
+import { FilePreviewModal } from '@opsbli/react-file-preview';
+import '@opsbli/react-file-preview/style.css';
+
+<FilePreviewModal
+  files={[file]}
+  currentIndex={0}
+  isOpen={true}
+  onClose={() => setIsOpen(false)}
+/>
+```
+
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f449.svg" width="16" height="16" alt="👉" style="vertical-align: middle;" /> [查看 React 完整文档](./packages/react-file-preview/README.zh-CN.md) | [在线演示](https://opsbli/doc-preview/)
+
+### Vue
+
+```bash
+npm install @opsbli/vue-file-preview
+```
+
+```vue
+<script setup>
+import { FilePreviewModal } from '@opsbli/vue-file-preview';
+import '@opsbli/vue-file-preview/style.css';
+</script>
+
+<template>
+  <FilePreviewModal
+    :files="[file]"
+    :current-index="0"
+    :is-open="true"
+    @close="isOpen = false"
+  />
+</template>
+```
+
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f449.svg" width="16" height="16" alt="👉" style="vertical-align: middle;" /> [查看 Vue 完整文档](./packages/vue-file-preview/README.zh-CN.md) | [在线演示](https://opsbli/doc-preview/vue/)
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4e6.svg" width="20" height="20" alt="📦" /> 包概览
+
+| 包名 | 描述 | 版本 | 文档 |
+|------|------|------|------|
+| [@opsbli/react-file-preview](https://www.npmjs.com/package/@opsbli/react-file-preview) | React 组件库 | [![npm](https://img.shields.io/npm/v/@opsbli/react-file-preview.svg)](https://www.npmjs.com/package/@opsbli/react-file-preview) | [README](./packages/react-file-preview/README.zh-CN.md) |
+| [@opsbli/vue-file-preview](https://www.npmjs.com/package/@opsbli/vue-file-preview) | Vue 3 组件库 | [![npm](https://img.shields.io/npm/v/@opsbli/vue-file-preview.svg)](https://www.npmjs.com/package/@opsbli/vue-file-preview) | [README](./packages/vue-file-preview/README.zh-CN.md) |
+| file-preview-core | 框架无关核心 | 内部包 | - |
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4cb.svg" width="20" height="20" alt="📋" /> 支持格式
+
+<table>
+<tr>
+  <th width="15%">类型</th>
+  <th width="40%">格式</th>
+  <th width="45%">核心功能</th>
+</tr>
+<tr>
+  <td><strong>图片</strong></td>
+  <td>JPG, PNG, GIF, WebP, SVG, BMP, ICO, AVIF, HEIC</td>
+  <td>缩放 (0.01x-10x)、旋转、拖拽、鼠标滚轮缩放</td>
+</tr>
+<tr>
+  <td><strong>视频</strong></td>
+  <td>MP4, WebM, OGG, MOV, AVI, MKV, M4V, 3GP, FLV</td>
+  <td>自定义播放器、进度控制、音量调节、全屏</td>
+</tr>
+<tr>
+  <td><strong>音频</strong></td>
+  <td>MP3, WAV, OGG, M4A, AAC, FLAC</td>
+  <td>自定义播放器、进度条、音量控制、快进快退</td>
+</tr>
+<tr>
+  <td><strong>文档</strong></td>
+  <td>PDF, DOCX, XLSX, PPTX/PPT</td>
+  <td>分页、缩放、幻灯片预览、表格查看</td>
+</tr>
+<tr>
+  <td><strong>代码</strong></td>
+  <td>JS, TS, Python, Java, C++, Go, Rust 等 40+ 语言</td>
+  <td>语法高亮、主题支持、行号显示</td>
+</tr>
+<tr>
+  <td><strong>字幕</strong></td>
+  <td>SRT, WebVTT, LRC, ASS/SSA, TTML/DFXP</td>
+  <td>时间轴解析、元数据提取、结构化显示</td>
+</tr>
+<tr>
+  <td><strong>CAD / 3D</strong></td>
+  <td>DXF, STL, OBJ, GLTF, GLB</td>
+  <td>交互式 3D 查看器、旋转/缩放/平移、线框切换、网格与坐标轴</td>
+</tr>
+<tr>
+  <td><strong>其他</strong></td>
+  <td>Markdown, CSV, JSON, XML, ZIP, MSG, EPUB, 字体</td>
+  <td>渲染、格式化、树形视图、字符集预览</td>
+</tr>
+</table>
+
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f449.svg" width="16" height="16" alt="👉" style="vertical-align: middle;" /> [查看完整格式列表和示例](https://opsbli/doc-preview/docs/guide/supported-types.html)
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f3d7.svg" width="20" height="20" alt="🏗️" /> 项目架构
+
+本项目采用 pnpm workspace monorepo 架构：
+
+```
+file-preview/
+├── packages/
+│   ├── file-preview-core/     # 框架无关核心（类型、文件检测、解析器）
+│   ├── react-file-preview/    # React 绑定 → @opsbli/react-file-preview
+│   ├── vue-file-preview/      # Vue 绑定 → @opsbli/vue-file-preview
+│   ├── example/               # React 示例应用（部署到 GitHub Pages）
+│   ├── vue-example/           # Vue 示例应用（部署到 GitHub Pages /vue）
+│   └── docs/                  # VitePress 文档站
+└── openspec/                  # OpenSpec 变更记录
+```
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f6e0.svg" width="20" height="20" alt="🛠️" /> 开发指南
+
+### 安装依赖
+
+```bash
+pnpm install
+```
+
+### 开发命令
+
+```bash
+# 启动开发服务器
+pnpm dev              # React 示例
+pnpm dev:vue          # Vue 示例
+pnpm dev:docs         # 文档站
+
+# 构建
+pnpm build            # 构建所有包
+pnpm build:lib        # 仅构建库
+pnpm build:example    # 仅构建示例
+
+# 预览构建产物
+pnpm preview:example  # 预览示例构建
+pnpm preview:docs     # 预览文档构建
+
+# 部署和发布
+pnpm gh               # 构建并部署示例和文档到 GitHub Pages
+pnpm pub:react        # 发布 React 包到 npm
+pnpm pub:vue          # 发布 Vue 包到 npm
+```
+
+### 贡献流程
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'feat: add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 提交 Pull Request
+
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f449.svg" width="16" height="16" alt="👉" style="vertical-align: middle;" /> [阅读完整贡献指南](./CONTRIBUTING.md)
+
+---
+
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f9e9.svg" width="20" height="20" alt="🧩" /> 自定义渲染器
+
+支持为内置不支持的文件类型提供自定义渲染器。
+
+**React 示例：**
+
+```tsx
+import { FilePreviewModal } from '@opsbli/react-file-preview';
+
+const customRenderers = [
+  {
+    test: (file) => file.type === 'application/custom',
+    render: (file) => <div>自定义渲染: {file.url}</div>
+  }
+];
+
+<FilePreviewModal
+  files={files}
+  currentIndex={0}
+  isOpen={true}
+  onClose={() => setIsOpen(false)}
+  customRenderers={customRenderers}
+/>
+```
+
+**Vue 示例：**
+
+```vue
+<script setup>
+import { FilePreviewModal } from '@opsbli/vue-file-preview';
+
+const CustomRenderer = {
+  props: ['url'],
+  template: '<div>自定义渲染: {{ url }}</div>'
+};
+
+const customRenderers = [
+  {
+    test: (file) => file.type === 'application/custom',
+    render: () => CustomRenderer
+  }
+];
+</script>
+
+<template>
+  <FilePreviewModal
+    :files="files"
+    :current-index="0"
+    :is-open="true"
+    :custom-renderers="customRenderers"
+    @close="isOpen = false"
+  />
+</template>
+```
+
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f449.svg" width="16" height="16" alt="👉" style="vertical-align: middle;" /> 详细文档：[React 自定义渲染器](./packages/react-file-preview/README.zh-CN.md#-自定义渲染器) | [Vue 自定义渲染器](./packages/vue-file-preview/README.zh-CN.md#-自定义渲染器)
+
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/2328.svg" width="20" height="20" alt="⌨️" /> 键盘快捷键
+
+| 按键 | 功能 |
+|------|------|
+| `ESC` | 关闭预览 |
+| `←` / `→` | 切换上一个/下一个文件 |
+| `鼠标滚轮` | 缩放图片（仅图片预览） |
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4c4.svg" width="20" height="20" alt="📄" /> 许可证
+
+[MIT](./LICENSE) © [opsbli](https://github.com/opsbli/doc-preview)
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f517.svg" width="20" height="20" alt="🔗" /> 相关链接
+
+- **GitHub**：[opsbli/doc-preview](https://github.com/opsbli/doc-preview)
+- **文档**：[opsbli/doc-preview/docs](https://opsbli/doc-preview/docs/)
+- **问题反馈**：[Issue Tracker](https://github.com/opsbli/doc-preview/issues)
+- **社区**：[Linux.do](https://linux.do/)
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4ac.svg" width="20" height="20" alt="💬" /> 社区与支持
+
+如果这个项目对你有帮助，欢迎：
+
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/2b50.svg" width="16" height="16" alt="⭐" style="vertical-align: middle;" /> 给项目点个 Star
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f41b.svg" width="16" height="16" alt="🐛" style="vertical-align: middle;" /> [提交 Issue](https://github.com/opsbli/doc-preview/issues) 报告问题
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4a1.svg" width="16" height="16" alt="💡" style="vertical-align: middle;" /> [提交 PR](https://github.com/opsbli/doc-preview/pulls) 贡献代码
+- <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4e2.svg" width="16" height="16" alt="📢" style="vertical-align: middle;" /> 分享给更多开发者

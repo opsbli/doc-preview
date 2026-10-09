@@ -1,0 +1,767 @@
+# 组件 API
+
+本库导出三个预览组件:
+
+| 组件 | 场景 | 渲染方式 |
+|------|------|---------|
+| [`FilePreviewModal`](#filepreviewmodal) | 全屏弹窗预览 | Portal 挂载到 `document.body`,带半透明遮罩 |
+| [`FilePreviewEmbed`](#filepreviewembed) | 内联嵌入到任意 div 容器 | 普通 DOM,填充父容器 |
+| [`FilePreviewContent`](#filepreviewcontent) | 底层组件,自定义包装 | 由你决定包装方式 |
+
+`FilePreviewModal` 和 `FilePreviewEmbed` 都是基于底层 `FilePreviewContent` 的薄包装,核心功能(工具栏、缩放、旋转、导航、渲染器分发)完全一致。
+
+## FilePreviewModal
+
+主要的文件预览模态框组件。
+
+### Props
+
+#### files
+
+- **类型**: `PreviewFileInput[]`
+- **必需**: 是
+- **描述**: 要预览的文件列表，支持三种输入格式：
+  - `File` 对象（原生浏览器 File）
+  - `PreviewFileLink` 对象（包含 name, url, type 等属性）
+  - `string`（HTTP URL）
+
+```tsx
+// 方式 1: URL 字符串
+const files1 = ['https://example.com/image.jpg']
+
+// 方式 2: 文件对象
+const files2 = [
+  {
+    name: 'document.pdf',
+    url: '/files/doc.pdf',
+    type: 'application/pdf'
+  }
+]
+
+// 方式 3: File 对象
+const files3 = [new File(['content'], 'text.txt')]
+
+// 方式 4: 混合使用
+const files4 = [
+  'https://example.com/image.jpg',
+  { name: 'doc.pdf', url: '/doc.pdf', type: 'application/pdf' },
+  fileObject
+]
+```
+
+#### currentIndex
+
+- **类型**: `number`
+- **必需**: 是
+- **描述**: 当前显示的文件索引（从 0 开始）
+
+```tsx
+<FilePreviewModal currentIndex={0} ... />
+```
+
+#### isOpen
+
+- **类型**: `boolean`
+- **必需**: 是
+- **描述**: 控制模态框的显示/隐藏状态
+
+```tsx
+<FilePreviewModal isOpen={true} ... />
+```
+
+#### onClose
+
+- **类型**: `() => void`
+- **必需**: 是
+- **描述**: 关闭模态框时的回调函数
+
+```tsx
+<FilePreviewModal onClose={() => setIsOpen(false)} ... />
+```
+
+#### onNavigate
+
+- **类型**: `(index: number) => void`
+- **必需**: 否
+- **描述**: 文件切换时的回调函数，参数为新的文件索引
+
+```tsx
+<FilePreviewModal
+  onNavigate={(index) => {
+    console.log('切换到文件:', index)
+    setCurrentIndex(index)
+  }}
+  ...
+/>
+```
+
+#### customRenderers
+
+- **类型**: `CustomRenderer[]`
+- **必需**: 否
+- **描述**: 自定义渲染器数组，用于扩展或覆盖默认的文件渲染逻辑
+
+每个 `CustomRenderer` 对象包含：
+- `test: (file: PreviewFile) => boolean` — 文件匹配函数，返回 `true` 表示使用此渲染器
+- `render: (file: PreviewFile, ctx?: CustomRendererContext) => React.ReactNode` — 渲染函数；`ctx` 可选，旧版 `render(file)` 仍兼容
+- `getToolbarGroups?: (file, ctx) => ToolbarGroup[]` — 可选；声明自定义工具组，命中时替代内置文件类型工具组
+- `events?: readonly string[]` — 可选；事件名白名单（仅用于 TS 与文档约定）
+
+`ctx` 提供 `emit(name, payload?)`、`t`、`theme`、`locale`。通过 `ctx.emit` 派发的事件会通过 `onCustomEvent` 转发到宿主。详见 [自定义渲染器指南](/guide/custom-renderers)。
+
+自定义渲染器会优先于内置渲染器执行。如果多个自定义渲染器匹配同一文件，将使用第一个匹配的渲染器。
+
+```tsx
+import type { CustomRenderer } from '@opsbli/react-file-preview'
+import { Sparkles } from 'lucide-react'
+
+const customRenderers: CustomRenderer[] = [
+  {
+    test: (file) => file.name.endsWith('.demo'),
+    render: (file, ctx) => <DemoViewer file={file} ctx={ctx} />,
+    getToolbarGroups: (_file, ctx) => [
+      {
+        items: [
+          {
+            type: 'button',
+            icon: <Sparkles className="rfp-w-4 rfp-h-4" />,
+            tooltip: 'Say Hello',
+            action: () => ctx.emit('hello', { ok: true }),
+          },
+        ],
+      },
+    ],
+    events: ['hello'] as const,
+  },
+]
+
+<FilePreviewModal
+  customRenderers={customRenderers}
+  onCustomEvent={(e) => console.log(e.name, e.payload, e.file)}
+  ...
+/>
+```
+
+#### locale
+
+- **类型**: `Locale`（`'zh-CN' | 'en-US' | string`）
+- **必需**: 否
+- **默认值**: `'zh-CN'`
+- **描述**: 界面语言。内置支持 `'zh-CN'`（中文）和 `'en-US'`（英文），也可传入任意 locale 字符串并通过 `messages` prop 提供字典。
+
+```tsx
+<FilePreviewModal locale="en-US" ... />
+```
+
+#### messages
+
+- **类型**: `Partial<Record<Locale, Partial<Messages>>>`
+- **必需**: 否
+- **描述**: 用户自定义翻译字典。浅合并到对应语言的内置字典之上，可覆盖任何翻译值。详见 [国际化指南](/guide/i18n)。
+
+```tsx
+<FilePreviewModal
+  locale="en-US"
+  messages={{ 'en-US': { 'toolbar.zoom_in': 'ZOOM++' } }}
+  ...
+/>
+```
+
+#### headless
+
+- **类型**: `boolean`
+- **必需**: 否
+- **默认值**: `false`
+- **描述**: 无头模式。设为 `true` 时隐藏工具栏和导航箭头，仅渲染文件内容区域。适用于需要自定义外壳或纯内容展示的场景。
+
+```tsx
+<FilePreviewModal headless .../>
+```
+
+#### theme
+
+- **类型**: `Theme`（`'auto' | 'dark' | 'light'`）
+- **必需**: 否
+- **默认值**: `'dark'`
+- **描述**: 主题模式。`'dark'` 为暗色主题（默认），`'light'` 为浅色主题，`'auto'` 跟随系统 `prefers-color-scheme` 自动切换。
+
+```tsx
+// 浅色主题
+<FilePreviewModal theme="light" .../>
+
+// 跟随系统
+<FilePreviewModal theme="auto" .../>
+```
+
+#### showDownload
+
+- **类型**: `boolean`
+- **必需**: 否
+- **默认值**: `true`
+- **描述**: 是否显示工具栏中的下载按钮。设为 `false` 可隐藏下载按钮，用于只读预览或需要禁用下载的场景。
+
+```tsx
+// 隐藏下载按钮
+<FilePreviewModal showDownload={false} .../>
+```
+
+#### showClose
+
+- **类型**: `boolean`
+- **必需**: 否
+- **默认值**: `undefined` (根据 `mode` 自动决定：modal 模式为 `true`，embed 模式为 `false`)
+- **描述**: 是否显示工具栏中的关闭按钮。显式设置此属性可以覆盖默认行为。
+
+```tsx
+// 显式隐藏关闭按钮（即使在 modal 模式）
+<FilePreviewModal showClose={false} .../>
+
+// 显式显示关闭按钮（即使在 embed 模式）
+<FilePreviewEmbed showClose={true} .../>
+```
+
+#### watermark
+
+- **类型**: `WatermarkConfig`
+- **必需**: 否
+- **描述**: 水印配置。传入后在预览内容之上叠加水印层（`pointer-events: none`，不干扰交互），支持 **文字 / 图片 / 图片+文字** 三种模式、平铺 / 居中 / 对角线三种布局。图片按原始宽高比**等比缩放**（contain 适配，不会拉伸变形）；图片+文字组合支持**图左文右**（默认）或**图上文下**并排布局，不重叠。颜色默认按主题自适应（dark 主题白色、light 主题黑色），透明度统一由 `opacity` 控制。`FilePreviewModal` / `FilePreviewEmbed` / `FilePreviewContent` 均支持。
+
+```tsx
+// 文字水印（默认平铺）
+<FilePreviewModal
+  watermark={{ mode: 'text', text: '机密文件', rotation: -30 }}
+  ...
+/>
+
+// 图片水印 + 居中布局（图片等比缩放，不拉伸）
+<FilePreviewModal
+  watermark={{
+    mode: 'image',
+    imageUrl: '/logo.png',
+    position: 'center',
+    opacity: 0.3,
+  }}
+  ...
+/>
+
+// 图片+文字组合水印（图左文右，默认）
+<FilePreviewModal
+  watermark={{
+    mode: 'both',
+    text: '机密文件',
+    imageUrl: '/logo.png',
+    layout: 'horizontal', // 'horizontal' 图左文右 | 'vertical' 图上文下
+    gap: 8,               // 图文间距（px）
+  }}
+  ...
+/>
+
+// 图片+文字组合水印（图上文下）
+<FilePreviewModal
+  watermark={{
+    mode: 'both',
+    text: '内部资料',
+    imageUrl: '/logo.png',
+    layout: 'vertical',
+  }}
+  ...
+/>
+
+// 多层叠加水印：每层独立配置（文字 / 图片 / 图片+文字任意混合）
+<FilePreviewModal
+  watermark={{
+    mode: 'text',
+    layers: [
+      { type: 'text', text: '机密文件', rotation: -30 },
+      {
+        type: 'both',
+        text: '内部资料 {username}',
+        imageUrl: '/logo.png',
+        layout: 'horizontal',
+        opacity: 0.25,
+      },
+    ],
+  }}
+  ...
+/>
+
+// 完整配置
+<FilePreviewModal
+  watermark={{
+    mode: 'text',
+    text: '内部资料 {username} {time}',
+    font: '14px sans-serif',
+    color: '#ff0000',       // 自定义颜色（默认按主题自适应）
+    opacity: 0.35,          // 透明度 0-1，默认 0.35
+    rotation: -30,          // 旋转角度，默认 -30
+    spacing: [200, 150],    // 平铺间距 [水平, 垂直]
+    position: 'tile',       // 'tile' | 'center' | 'diagonal'
+  }}
+  ...
+/>
+```
+
+`WatermarkConfig` 字段：
+
+| 字段 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `mode` | `'text' \| 'image' \| 'both'` | 必填 | 文字 / 图片 / 图片+文字水印 |
+| `layers` | `WatermarkLayer[]` | - | 多层水印叠加（每层独立配置，数组顺序即绘制顺序）。传入时忽略顶层 `mode` 等单层字段 |
+| `text` | `string` | - | 文字内容（`mode='text'` / `mode='both'` 时使用），支持 `{username}` `{time}` 占位符 |
+| `font` | `string` | `'14px sans-serif'` | 文字字体 |
+| `color` | `string` | 主题自适应 | 文字颜色（dark 白色 / light 黑色） |
+| `imageUrl` | `string` | - | 图片 URL（`mode='image'` / `mode='both'` 时使用） |
+| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | 图片+文字组合布局：图左文右 / 图上文下 |
+| `gap` | `number` | `8` | 图片与文字的间距（px） |
+| `imageSize` | `[number, number]` | `[80, 80]` | 图片水印单元尺寸（约束盒，图片按原始比例等比缩放） |
+| `opacity` | `number` | `0.35` | 透明度 0-1 |
+| `rotation` | `number` | `-30` | 旋转角度（度） |
+| `spacing` | `[number, number]` | `[200, 150]` | 平铺间距 [水平, 垂直] |
+| `position` | `'tile' \| 'center' \| 'diagonal'` | `'tile'` | 布局方式 |
+| `zIndex` | `number` | `800` | 水印层层级 |
+
+#### password
+
+- **类型**: `string`
+- **必需**: 否
+- **描述**: 加密 PDF 的密码。传入后跳过密码输入弹窗直接加载加密 PDF；未传时检测到加密 PDF 会自动弹出密码输入框（错误密码可重试，上限 3 次）。密码错误或超限时通过 `onPasswordError` 回调通知宿主（`FilePreviewContent` 内部处理）。当前仅支持 PDF 加密文件；DOCX / XLSX / PPTX 等 Office 加密文件会显示"文件受密码保护"提示。
+
+```tsx
+// 已知密码直接加载
+<FilePreviewModal password="123456" .../>
+
+// 不传密码时：检测到加密 PDF 自动弹窗
+<FilePreviewModal .../>
+```
+
+#### onCustomEvent
+
+- **类型**: `(event: CustomRendererEventPayload) => void`
+- **必需**: 否
+- **描述**: 自定义渲染器通过 `ctx.emit(name, payload)` 派发的事件出口。载荷形状为 `{ name, payload, file }`。`FilePreviewModal` / `FilePreviewEmbed` 会自动透传。宿主未绑定时静默忽略，不抛错。
+
+```tsx
+<FilePreviewModal
+  onCustomEvent={(e) => {
+    if (e.name === 'hello') console.log('got hello from', e.file.name)
+  }}
+  ...
+/>
+```
+
+#### requestInit
+
+- **类型**: `RequestInit | (url: string) => RequestInit | Promise<RequestInit>`
+- **必需**: 否
+- **描述**: 自定义 `RequestInit`（或工厂函数）。库内所有 `fetch` 调用都会带上它，用于注入 `Authorization` / `credentials` 等鉴权信息。详见 [鉴权与自定义请求](/guide/authentication)。
+
+```tsx
+<FilePreviewModal
+  requestInit={(url) => ({
+    headers: { Authorization: `Bearer ${token}` },
+    credentials: 'include',
+  })}
+  ...
+/>
+```
+
+#### requestHandler
+
+- **类型**: `(url: string, init?: RequestInit) => Promise<Response>`
+- **必需**: 否
+- **描述**: 完全接管库内 fetch。可用于把请求改走 axios / 你自己的 HTTP 客户端。与 `requestInit` 同时存在时，handler 接收已合并好的 init。
+
+```tsx
+<FilePreviewModal
+  requestHandler={async (url, init) => myHttpClient.fetch(url, init)}
+  ...
+/>
+```
+
+#### shouldFetchAsBlob
+
+- **类型**: `(file: PreviewFile) => boolean`
+- **必需**: 否
+- **描述**: 返回 `true` 时，对应文件先用 `requestInit` / `requestHandler` 请求转为 `blob:` URL，再喂给 image / video / audio / pdf 等 src 类 renderer。这是让 `<img src>` / `<video src>` 等也复用鉴权头的唯一方式。库内自动管理 blob URL 生命周期。
+
+```tsx
+<FilePreviewModal
+  // 仅图片和 PDF 走 blob 模式；audio/video 保留浏览器流式加载
+  shouldFetchAsBlob={(file) =>
+    file.type.startsWith('image/') || file.type === 'application/pdf'
+  }
+  ...
+/>
+```
+
+::: warning audio/video 注意事项
+命中 `shouldFetchAsBlob` 的 audio/video 会被整段下载后一次性渲染，**丢失浏览器原生的渐进式播放/边下边播能力**。仅在文件较小或必须鉴权时启用。
+:::
+
+#### onDownload
+
+- **类型**: `(file: PreviewFile) => void | Promise<void>`
+- **必需**: 否
+- **描述**: 自定义下载回调。
+  - **不传**：库内默认通过 `fetcher` 拉成 Blob 触发 `<a download>`，**自动复用 `requestInit` / `requestHandler` 中的鉴权头**——这是鉴权 URL 场景下能正确下载的关键，避免直接 `<a href={url} download>` 带不上 header 的问题。
+  - **传入**：完全接管下载行为，库内不再做任何 fetch / `<a>` 操作。可用于走自家下载中心、上报埋点等。
+
+```tsx
+<FilePreviewModal
+  onDownload={async (file) => {
+    await downloadCenter.enqueue(file.url, file.name)
+    notification.success(`${file.name} 已加入下载队列`)
+  }}
+  ...
+/>
+```
+
+详见 [鉴权与自定义请求 # 自定义下载行为](/guide/authentication#自定义下载行为)。
+
+### 完整示例
+
+```tsx
+import { useState } from 'react'
+import { FilePreviewModal } from '@opsbli/react-file-preview'
+import type { PreviewFileInput } from '@opsbli/react-file-preview'
+import '@opsbli/react-file-preview/style.css'
+
+function App() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const files: PreviewFileInput[] = [
+    'https://example.com/image.jpg',
+    {
+      name: 'document.pdf',
+      url: 'https://example.com/document.pdf',
+      type: 'application/pdf'
+    }
+  ]
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>
+        打开预览
+      </button>
+
+      <FilePreviewModal
+        files={files}
+        currentIndex={currentIndex}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onNavigate={setCurrentIndex}
+      />
+    </>
+  )
+}
+```
+
+## FilePreviewEmbed
+
+嵌入式文件预览组件。与 `FilePreviewModal` 共用同一套渲染逻辑,但以内联方式渲染到你指定的容器内,而不是全屏弹出。
+
+**适用场景:**
+
+- 详情页中的文件预览面板
+- 左右分栏的文件浏览器
+- 仪表盘卡片里的文件预览
+- 任何不希望遮挡页面其他内容的场景
+
+### 基础用法
+
+```tsx
+import { FilePreviewEmbed } from '@opsbli/react-file-preview'
+import '@opsbli/react-file-preview/style.css'
+
+function Panel() {
+  const files = [
+    'https://example.com/image.jpg',
+    { name: 'doc.pdf', url: '/doc.pdf', type: 'application/pdf' }
+  ]
+
+  return (
+    // 嵌入预览默认填充父容器,父容器需要有明确的高度
+    <div style={{ width: '100%', height: 520 }}>
+      <FilePreviewEmbed files={files} />
+    </div>
+  )
+}
+```
+
+### Props
+
+| 属性 | 类型 | 必需 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `files` | `PreviewFileInput[]` | ✅ | - | 要预览的文件列表,格式与 `FilePreviewModal.files` 一致 |
+| `currentIndex` | `number` | ❌ | `0` | 当前显示的文件索引 |
+| `onNavigate` | `(index: number) => void` | ❌ | - | 切换文件时的回调 |
+| `customRenderers` | `CustomRenderer[]` | ❌ | - | 自定义渲染器数组 |
+| `width` | `number \| string` | ❌ | `'100%'` | 容器宽度,填充父容器或显式指定 |
+| `height` | `number \| string` | ❌ | `'100%'` | 容器高度 |
+| `className` | `string` | ❌ | - | 根节点额外 className |
+| `style` | `CSSProperties` | ❌ | - | 根节点额外内联样式 |
+| `locale` | `Locale` | ❌ | `'zh-CN'` | 界面语言 |
+| `messages` | `Partial<Record<Locale, Partial<Messages>>>` | ❌ | - | 自定义翻译字典 |
+| `headless` | `boolean` | ❌ | `false` | 无头模式,隐藏工具栏和导航箭头 |
+| `theme` | `Theme` | ❌ | `'dark'` | 主题模式: `'auto' \| 'dark' \| 'light'` |
+| `showDownload` | `boolean` | ❌ | `true` | 是否显示下载按钮 |
+| `showClose` | `boolean` | ❌ | `false` | 是否显示关闭按钮（embed 模式默认 `false`） |
+| `onCustomEvent` | `(e: CustomRendererEventPayload) => void` | ❌ | - | 自定义渲染器事件出口,载荷 `{ name, payload, file }` |
+| `requestInit` | `RequestInit \| (url) => RequestInit \| Promise<RequestInit>` | ❌ | - | 自定义 RequestInit，注入鉴权头等 |
+| `requestHandler` | `(url, init?) => Promise<Response>` | ❌ | - | 完全接管库内 fetch |
+| `shouldFetchAsBlob` | `(file: PreviewFile) => boolean` | ❌ | - | 返回 true 时 src 类 renderer 也走 fetch→blob URL |
+| `onDownload` | `(file: PreviewFile) => void \| Promise<void>` | ❌ | - | 自定义下载回调；不传时默认走 fetcher 拉 Blob 下载 |
+
+::: tip 尺寸说明
+`FilePreviewEmbed` 默认使用 `width: 100%; height: 100%` 填充父容器,因此 **父容器必须具有明确的高度**(如 `height: 520px` 或通过 flex/grid 布局给定高度),否则组件会塌陷为 0 高度。
+
+也可以直接在组件上显式指定尺寸:
+
+```tsx
+<FilePreviewEmbed files={files} width={800} height={500} />
+```
+:::
+
+### 与 FilePreviewModal 的区别
+
+| 特性 | FilePreviewModal | FilePreviewEmbed |
+|------|------------------|------------------|
+| 渲染位置 | Portal 到 `document.body` | 组件树内联 |
+| 背景遮罩 | 半透明黑色全屏遮罩 | 无 |
+| `isOpen` / `onClose` | 必填 | 不存在,由父组件控制是否渲染 |
+| 工具栏"关闭"按钮 | ✅ 默认显示（可通过 `showClose={false}` 隐藏） | ❌ 默认隐藏（可通过 `showClose={true}` 显示） |
+| `Esc` 键关闭 | ✅ 支持(全局监听) | ❌ 不支持 |
+| ← → 键导航 | ✅ 全局 `window` 监听 | ✅ 仅容器 focus 时响应 |
+| body 滚动锁定 | ✅ 打开时锁定 | ❌ 不锁定 |
+| z-index | `9999`(最高层) | 跟随组件树,由外层决定 |
+
+### 完整示例
+
+```tsx
+import { useState } from 'react'
+import { FilePreviewEmbed } from '@opsbli/react-file-preview'
+import type { PreviewFileInput } from '@opsbli/react-file-preview'
+import '@opsbli/react-file-preview/style.css'
+
+function DetailPanel() {
+  const [index, setIndex] = useState(0)
+
+  const files: PreviewFileInput[] = [
+    'https://example.com/image.jpg',
+    { name: 'document.pdf', url: 'https://example.com/doc.pdf', type: 'application/pdf' },
+    { name: 'data.xlsx', url: 'https://example.com/data.xlsx', type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+  ]
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <aside>
+        {files.map((f, i) => (
+          <button key={i} onClick={() => setIndex(i)}>
+            文件 {i + 1}
+          </button>
+        ))}
+      </aside>
+
+      <div style={{ height: 600 }}>
+        <FilePreviewEmbed
+          files={files}
+          currentIndex={index}
+          onNavigate={setIndex}
+        />
+      </div>
+    </div>
+  )
+}
+```
+
+## FilePreviewContent
+
+底层文件预览组件。`FilePreviewModal` 和 `FilePreviewEmbed` 都是基于它的薄包装。
+
+当你需要构建完全自定义的外壳(例如自定义抽屉、浮层、Tab 切换容器等)时,可以直接使用它。
+
+### Props
+
+| 属性 | 类型 | 必需 | 默认值 | 描述 |
+|------|------|------|--------|------|
+| `files` | `PreviewFileInput[]` | ✅ | - | 文件列表 |
+| `currentIndex` | `number` | ✅ | - | 当前文件索引 |
+| `onNavigate` | `(index: number) => void` | ❌ | - | 导航回调 |
+| `customRenderers` | `CustomRenderer[]` | ❌ | - | 自定义渲染器 |
+| `mode` | `'modal' \| 'embed'` | ❌ | `'modal'` | 运行模式,控制细节差异 |
+| `onClose` | `() => void` | ❌ | - | 关闭回调,仅在 `mode='modal'` 时显示关闭按钮 |
+| `headless` | `boolean` | ❌ | `false` | 无头模式,隐藏工具栏和导航箭头 |
+| `theme` | `Theme` | ❌ | `'dark'` | 主题模式: `'auto' \| 'dark' \| 'light'` |
+| `showDownload` | `boolean` | ❌ | `true` | 是否显示下载按钮 |
+| `showClose` | `boolean` | ❌ | `undefined` | 是否显示关闭按钮（未设置时根据 `mode` 决定：modal 为 `true`，embed 为 `false`） |
+| `locale` | `Locale` | ❌ | `'zh-CN'` | 界面语言 |
+| `messages` | `Partial<Record<Locale, Partial<Messages>>>` | ❌ | - | 自定义翻译字典 |
+| `onCustomEvent` | `(e: CustomRendererEventPayload) => void` | ❌ | - | 自定义渲染器事件出口 |
+| `requestInit` | `RequestInit \| (url) => RequestInit \| Promise<RequestInit>` | ❌ | - | 自定义 RequestInit |
+| `requestHandler` | `(url, init?) => Promise<Response>` | ❌ | - | 完全接管库内 fetch |
+| `shouldFetchAsBlob` | `(file: PreviewFile) => boolean` | ❌ | - | src 类 renderer 走 fetch→blob URL |
+| `onDownload` | `(file: PreviewFile) => void \| Promise<void>` | ❌ | - | 自定义下载回调 |
+
+**mode 差异:**
+
+- `mode='modal'`: 默认显示工具栏"关闭"按钮（可通过 `showClose={false}` 隐藏）、全局监听键盘(Esc 关闭、←/→ 导航)
+- `mode='embed'`: 默认不显示"关闭"按钮（可通过 `showClose={true}` 显示）、键盘事件绑定到组件根节点(需 focus),不监听 Esc
+
+### 使用示例
+
+```tsx
+import { FilePreviewContent } from '@opsbli/react-file-preview'
+
+function CustomDrawer({ files, currentIndex, onNavigate, onClose }) {
+  return (
+    <div className="my-drawer-wrapper" style={{ width: 720, height: '100vh' }}>
+      <div className="my-drawer-header">
+        <button onClick={onClose}>自定义关闭按钮</button>
+      </div>
+      <div style={{ flex: 1 }}>
+        <FilePreviewContent
+          mode="embed"
+          files={files}
+          currentIndex={currentIndex}
+          onNavigate={onNavigate}
+        />
+      </div>
+    </div>
+  )
+}
+```
+
+## 渲染机制
+
+### Portal 渲染
+
+`FilePreviewModal` 使用 React Portal (`createPortal`) 将模态框渲染到 `document.body`，而不是在组件树的当前位置渲染。
+
+**优势：**
+
+- <img src="/assets/icons/check.svg" width="18" height="18" style="display:inline;vertical-align:middle" /> **最高层级**: 模态框的 `z-index` 设置为 `9999`，确保始终显示在页面最上层
+- <img src="/assets/icons/check.svg" width="18" height="18" style="display:inline;vertical-align:middle" /> **样式隔离**: 不受父元素的 CSS 样式影响（如 `overflow: hidden`、`transform`、`filter` 等）
+- <img src="/assets/icons/check.svg" width="18" height="18" style="display:inline;vertical-align:middle" /> **定位准确**: 模态框使用 `fixed` 定位相对于视口，不受父元素定位上下文影响
+- <img src="/assets/icons/check.svg" width="18" height="18" style="display:inline;vertical-align:middle" /> **无需配置**: 开箱即用，无需担心层级和定位问题
+
+**示例：**
+
+```tsx
+// 即使在复杂的嵌套结构中使用也没问题
+<div style={{ position: 'relative', overflow: 'hidden', zIndex: 100 }}>
+  <div style={{ transform: 'scale(0.9)' }}>
+    <FilePreviewModal
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      files={files}
+      currentIndex={0}
+    />
+  </div>
+</div>
+```
+
+模态框会自动渲染到 `document.body`，完全不受上述样式影响。
+
+## 功能特性
+
+### 工具栏控制
+
+根据文件类型，组件提供不同的工具栏控制：
+
+#### 图片预览
+- **缩放控制**: 放大/缩小按钮（步进 10%，范围 0.01x - 10x），鼠标滚轮缩放（步进 0.05）
+- **旋转控制**: 顺时针/逆时针旋转（每次 90°）
+- **拖拽移动**: 缩放后可拖拽图片
+- **重置按钮**: 恢复到原始状态
+
+#### PDF 预览
+- **缩放控制**: 放大/缩小按钮（范围 0.01x - 10x）
+- **页面导航**: 上一页/下一页按钮
+- **页码显示**: 当前页/总页数
+- **连续滚动**: 支持滚动浏览所有页面
+
+#### Office 文档
+- **Word (DOCX)**: 通过 mammoth 库渲染为 HTML
+- **Excel (XLSX)**: 多工作表切换，表格渲染
+- **PowerPoint (PPT/PPTX)**: 平铺/幻灯片两种显示模式，16:9 宽高比
+
+#### Outlook 邮件
+- **MSG**: 解析邮件头信息（发件人、收件人、主题、日期）
+- 邮件正文渲染
+- 附件列表展示
+
+#### 视频
+- 基于 Video.js 播放器
+- 支持播放控制、音量调节、进度条、全屏播放
+- 支持 MP4、WebM、OGG、MOV、AVI、MKV 等格式
+
+#### 音频
+- 自定义播放器界面（紫粉渐变主题）
+- 播放/暂停控制、进度条、音量调节
+- 快进/快退按钮（±10 秒）
+- 支持 MP3、WAV、OGG、M4A、AAC、FLAC 格式
+
+#### Markdown
+- 实时渲染 Markdown 内容
+- 支持 GFM (GitHub Flavored Markdown)
+- 支持表格、代码块、任务列表等
+
+#### 代码文件
+- 语法高亮显示（40+ 种语言）
+- 自动检测语言类型
+- VS Code Dark+ 主题
+
+### 通用功能
+
+- **文件导航**: 上一个/下一个文件按钮
+- **下载功能**: 下载当前文件
+- **关闭操作**: 关闭按钮、ESC 键、点击背景
+
+### 键盘快捷键
+
+| 按键 | 功能 |
+|------|------|
+| `Escape` | 关闭预览（搜索面板打开时优先关闭搜索面板） |
+| `←` | 上一个文件（搜索面板打开时不触发） |
+| `→` | 下一个文件（搜索面板打开时不触发） |
+| `Ctrl+F` / `Cmd+F` | 唤起全文搜索面板 |
+| `↑` / `↓` | 搜索面板打开时：跳转到上一个/下一个匹配 |
+| `Enter` | 搜索输入框内：立即执行搜索 |
+
+### 全文搜索
+
+支持对文本类文件（代码、文本、JSON、XML、Markdown）进行全文搜索：
+
+- **唤起方式**: 按 `Ctrl+F`（Mac 上 `Cmd+F`），或点击工具栏搜索按钮（文本类文件显示）
+- **搜索面板**: 输入框 + 匹配计数 + 上/下翻页 + 大小写敏感切换 + 关闭按钮
+- **高亮**: 匹配文本以黄色 `<mark>` 标记，当前匹配以橙色高亮
+- **翻页**: 面板内 `↑`/`↓` 或按钮跳转上一个/下一个匹配，自动滚动定位
+- **关闭**: `Esc` 或点击关闭按钮，清除所有高亮
+
+支持搜索的文件类型：代码/文本（40+ 语言）、JSON、XML、Markdown。图片、视频、音频、PDF、CAD 等二进制格式暂不支持全文搜索。
+
+### 响应式设计
+
+- **桌面端**: 完整工具栏和控制按钮
+- **移动端**: 优化的触摸操作和简化的 UI
+- **平板**: 介于两者之间的体验
+
+### 触摸手势
+
+- **左滑** (>50px): 切换到下一个文件
+- **右滑** (>50px): 切换到上一个文件
+
+### 动画效果
+
+基于 Framer Motion 提供入场/退场动画，包括模态框、导航按钮和工具栏的过渡动画。
+
+### 滚动锁定
+
+预览打开时自动锁定页面滚动，关闭后恢复，并自动处理滚动条宽度补偿。
+
+## 下一步
+
+- [类型定义](./types) - 查看所有类型定义
+- [工具函数](./utils) - 了解可用的工具函数
+

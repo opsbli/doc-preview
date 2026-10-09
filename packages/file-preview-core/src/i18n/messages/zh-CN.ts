@@ -1,0 +1,178 @@
+import type { Messages } from '../types';
+
+/**
+ * 内置中文字典（默认 / 兜底语言）
+ */
+export const zhCN: Messages = {
+  // ─────── common ───────
+  'common.download': '下载',
+  'common.close': '关闭',
+  'common.loading': '加载中',
+  'common.unknown_error': '未知错误',
+  'common.unsupported_preview': '不支持预览此文件类型 ({type})',
+  'common.retry': '重试',
+
+  // ─────── accessibility ───────
+  'accessibility.previousFile': '上一个文件',
+  'accessibility.nextFile': '下一个文件',
+  'accessibility.closePreview': '关闭预览',
+  'accessibility.downloadFile': '下载文件',
+
+  // ─────── toolbar ───────
+  'toolbar.zoom_in': '放大',
+  'toolbar.zoom_out': '缩小',
+  'toolbar.rotate_left': '向左旋转',
+  'toolbar.rotate_right': '向右旋转',
+  'toolbar.reset': '复原',
+  'toolbar.fit_to_window': '适应窗口',
+  'toolbar.original_size': '原始尺寸',
+  'toolbar.toc': '目录',
+  'toolbar.outline': '大纲',
+  'toolbar.prev_page': '上一页',
+  'toolbar.next_page': '下一页',
+  'toolbar.full_width': '全屏宽度',
+  'toolbar.normal_width': '正常宽度',
+  'toolbar.wrap_on': '自动换行',
+  'toolbar.wrap_off': '不换行',
+  'toolbar.source': '源码',
+  'toolbar.preview': '预览',
+
+  // ─────── image ───────
+  'image.load_failed': '图片加载失败',
+  'image.decode_failed': '图片解码失败',
+
+  // ─────── pdf ───────
+  'pdf.load_failed': 'PDF 文件加载失败',
+
+  // ─────── docx ───────
+  'docx.parse_failed': 'Word 文档解析失败',
+
+  // ─────── xlsx ───────
+  'xlsx.loading': '加载 Excel 中...',
+  'xlsx.load_failed': 'Excel 加载失败',
+  'xlsx.parse_failed': 'Excel 文件解析失败',
+  'xlsx.not_found': 'Excel 文件不存在',
+
+  // ─────── pptx ───────
+  'pptx.loading': '加载 PPT 中...',
+  'pptx.load_failed': 'PPT 加载失败',
+  'pptx.parse_failed': 'PPT 文件解析失败',
+  'pptx.not_found': 'PPT 文件不存在',
+  'pptx.invalid_format': 'PPT 文件格式错误或已损坏',
+  'pptx.no_pages': 'PPT 文件无有效页面',
+  'pptx.timeout': '加载超时，请检查网络或稍后重试',
+
+  // ─────── msg ───────
+  'msg.parse_failed': 'Outlook 邮件解析失败',
+  'msg.parse_failed_short': '邮件解析失败',
+  'msg.empty_body': '（无邮件正文）',
+
+  // ─────── epub ───────
+  'epub.load_failed': 'EPUB 文件加载失败',
+
+  // ─────── mobi ───────
+  'mobi.load_failed': '电子书加载失败，文件可能已损坏或带有 DRM 保护',
+
+  // ─────── video ───────
+  'video.loading': '加载视频中...',
+  'video.load_failed': '视频加载失败',
+  'video.load_failed_with_error': '视频加载失败: {error}',
+  'video.format_not_supported': '浏览器不支持 {format} 格式，建议转换为 MP4/WebM 格式',
+  'video.unsupported_title': '该视频格式无法在浏览器中直接播放',
+  'video.unsupported_detail': '{format} 是浏览器原生不支持的容器/编码（常见于 AVI / WMV / FLV 及部分 MKV）。请下载到本地播放器观看，或转换为 MP4（H.264 + AAC）。',
+  'video.codec_not_supported_detail': '视频或音频编码 {codecs} 浏览器无法解码。请转换为 MP4（H.264 + AAC）后再预览。',
+
+  // ─────── audio (aria-label) ───────
+  'audio.aria.play': '播放',
+  'audio.aria.pause': '暂停',
+  'audio.aria.forward_10': '前进 10 秒',
+  'audio.aria.backward_10': '后退 10 秒',
+  'audio.aria.mute': '静音',
+  'audio.aria.unmute': '取消静音',
+  'audio.aria.loop_on': '开启循环',
+  'audio.aria.loop_off': '关闭循环',
+  'audio.aria.progress': '播放进度',
+  'audio.aria.volume': '音量',
+
+  // ─────── markdown ───────
+  'markdown.load_failed': 'Markdown 文件加载失败',
+  'markdown.copy_code': '复制代码',
+  'markdown.copied': '已复制',
+
+  // ─────── json ───────
+  'json.load_failed': 'JSON 文件加载失败',
+  'json.items': 'items',
+  'json.keys': 'keys',
+
+  // ─────── csv ───────
+  'csv.loading': '加载 CSV 中...',
+  'csv.load_failed': 'CSV 文件加载失败',
+  'csv.parse_failed': 'CSV 解析失败',
+
+  // ─────── xml ───────
+  'xml.load_failed': 'XML 文件加载失败',
+
+  // ─────── subtitle / lyric ───────
+  'subtitle.load_failed': '字幕文件加载失败',
+  'subtitle.parse_failed': '字幕解析失败',
+  'subtitle.lines': 'lines',
+  'subtitle.cues': 'cues',
+  'subtitle.meta.title': '标题',
+  'subtitle.meta.artist': '艺术家',
+  'subtitle.meta.album': '专辑',
+  'subtitle.meta.author': '作者',
+  'subtitle.meta.by': '制作',
+  'subtitle.meta.length': '时长',
+  'subtitle.meta.offset': '偏移',
+  'subtitle.meta.editor': '编辑器',
+  'subtitle.meta.version': '版本',
+
+  // ─────── zip ───────
+  'zip.load_failed': 'ZIP 文件加载失败',
+  'zip.parse_failed': 'ZIP 解析失败',
+
+  // ─────── text ───────
+  'text.load_failed': '文本文件加载失败',
+
+  // ─────── font ───────
+  'font.loading': '加载字体中...',
+  'font.load_failed': '字体文件加载失败',
+  'font.parse_failed': '字体解析失败',
+  'font.metadata_loading': '解析元数据中...',
+  'font.metadata_unavailable': '元数据不可用',
+  'font.meta.family': '字体家族',
+  'font.meta.subfamily': '子系列',
+  'font.meta.version': '版本',
+  'font.meta.designer': '设计师',
+  'font.meta.glyphs': '字形数量',
+  'font.meta.format': '格式',
+  'font.sample_text_placeholder': '输入自定义文本...',
+
+  // ─────── cad ───────
+  'cad.loading': '加载 CAD 文件中...',
+  'cad.load_failed': 'CAD 文件加载失败',
+  'cad.parse_failed': 'CAD 文件解析失败',
+  'cad.wireframe': '线框',
+  'cad.solid': '实体',
+  'cad.grid': '网格',
+  'cad.axes': '坐标轴',
+
+  // ─────── encrypted ───────
+  'encrypted.title': '文件需要密码',
+  'encrypted.password_placeholder': '请输入密码',
+  'encrypted.confirm': '确认',
+  'encrypted.error': '密码错误，请重试',
+  'encrypted.max_attempts': '已达最大重试次数，无法打开文件',
+  'encrypted.retries_left': '剩余 {count} 次重试机会',
+  'encrypted.waiting': '等待输入密码...',
+  'encrypted.protected': '文件受密码保护，请下载后用 Office 打开',
+
+  // ─────── search ───────
+  'search.placeholder': '搜索...',
+  'search.no_results': '未找到匹配',
+  'search.match_count': '{current} / {total}',
+  'search.case_sensitive': '区分大小写',
+  'search.prev_match': '上一个匹配',
+  'search.next_match': '下一个匹配',
+  'search.close': '关闭搜索',
+};

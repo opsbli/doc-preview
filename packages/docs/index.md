@@ -1,0 +1,211 @@
+---
+layout: home
+
+hero:
+  name: Doc Preview
+  text: 现代化的文件预览组件
+  tagline: 同时支持 React 与 Vue 3 · 图片、视频、音频、PDF、Office 文档、电子书、字体、CAD/3D 模型、Markdown 与代码文件
+  image:
+    src: /icon.svg
+    alt: Doc Preview
+  actions:
+    - theme: brand
+      text: 快速开始
+      link: /guide/getting-started
+    - theme: alt
+      text: React 在线示例
+      link: https://opsbli/doc-preview/
+    - theme: alt
+      text: Vue 在线示例
+      link: https://opsbli/doc-preview/vue/
+    - theme: alt
+      text: GitHub
+      link: https://github.com/opsbli/doc-preview
+
+features:
+  - icon:
+      src: /assets/icons/picture.svg
+      width: 48
+      height: 48
+    title: 多格式支持
+    details: 支持图片、视频、音频、PDF、Office 文档、EPUB / MOBI 电子书、字体文件、CAD / 3D 模型、Markdown 与代码文件等多种格式
+  - icon:
+      src: /assets/icons/lightning.svg
+      width: 48
+      height: 48
+    title: React + Vue 双框架
+    details: 提供功能完全对等的 React 和 Vue 3 两个版本，共享底层 core 包
+  - icon:
+      src: /assets/icons/palette.svg
+      width: 48
+      height: 48
+    title: 可定制
+    details: 支持自定义渲染器和主题，轻松适配你的应用风格
+  - icon:
+      src: /assets/icons/mobile.svg
+      width: 48
+      height: 48
+    title: 响应式设计
+    details: 完美适配桌面和移动设备，提供一致的用户体验
+  - icon:
+      src: /assets/icons/wrench.svg
+      width: 48
+      height: 48
+    title: 弹窗 & 嵌入双模式
+    details: 既可以全屏弹窗展示,也可以嵌入到任意 div 容器中内联预览,灵活适配不同场景
+  - icon:
+      src: /assets/icons/package.svg
+      width: 48
+      height: 48
+    title: TypeScript 支持
+    details: 完整的 TypeScript 类型定义，提供更好的开发体验
+---
+
+## 快速开始
+
+### 安装
+
+::: code-group
+
+```bash [React · pnpm]
+pnpm add @opsbli/react-file-preview
+```
+
+```bash [Vue 3 · pnpm]
+pnpm add @opsbli/vue-file-preview
+```
+
+```bash [React · npm]
+npm install @opsbli/react-file-preview
+```
+
+```bash [Vue 3 · npm]
+npm install @opsbli/vue-file-preview
+```
+
+:::
+
+### 基础用法
+
+使用 **弹窗模式** (`FilePreviewModal`):
+
+::: code-group
+
+```tsx [React]
+import { useState } from 'react'
+import { FilePreviewModal } from '@opsbli/react-file-preview'
+import '@opsbli/react-file-preview/style.css'
+
+function App() {
+  const [isOpen, setIsOpen] = useState(false)
+  const files = [
+    { url: 'https://example.com/document.pdf', name: 'document.pdf' }
+  ]
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>预览文件</button>
+      <FilePreviewModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        files={files}
+        currentIndex={0}
+      />
+    </>
+  )
+}
+```
+
+```vue [Vue 3]
+<script setup>
+import { ref } from 'vue'
+import { FilePreviewModal } from '@opsbli/vue-file-preview'
+import '@opsbli/vue-file-preview/style.css'
+
+const isOpen = ref(false)
+const files = [
+  { url: 'https://example.com/document.pdf', name: 'document.pdf' }
+]
+</script>
+
+<template>
+  <button @click="isOpen = true">预览文件</button>
+  <FilePreviewModal
+    :is-open="isOpen"
+    :files="files"
+    :current-index="0"
+    @close="isOpen = false"
+  />
+</template>
+```
+
+:::
+
+使用 **嵌入模式** (`FilePreviewEmbed`) — 将预览直接内联到页面任意容器:
+
+::: code-group
+
+```tsx [React]
+import { FilePreviewEmbed } from '@opsbli/react-file-preview'
+import '@opsbli/react-file-preview/style.css'
+
+function Detail() {
+  const files = [
+    { url: 'https://example.com/document.pdf', name: 'document.pdf' }
+  ]
+
+  return (
+    <div style={{ width: '100%', height: 520 }}>
+      <FilePreviewEmbed files={files} />
+    </div>
+  )
+}
+```
+
+```vue [Vue 3]
+<script setup>
+import { FilePreviewEmbed } from '@opsbli/vue-file-preview'
+import '@opsbli/vue-file-preview/style.css'
+
+const files = [
+  { url: 'https://example.com/document.pdf', name: 'document.pdf' }
+]
+</script>
+
+<template>
+  <div style="width: 100%; height: 520px">
+    <FilePreviewEmbed :files="files" />
+  </div>
+</template>
+```
+
+:::
+
+## 支持的文件类型
+
+- **图片**：JPG, PNG, GIF, WebP, SVG, BMP, ICO
+- **视频**：MP4, WebM, OGG, MOV, AVI, MKV, M4V, 3GP, FLV
+- **音频**：MP3, WAV, OGG, M4A, AAC, FLAC
+- **文档**：PDF, Word (DOCX), Excel (XLSX), PowerPoint (PPT/PPTX), Outlook (MSG)
+- **电子书**：EPUB, MOBI, AZW, AZW3, KF8
+- **字体**：TTF, OTF, WOFF, WOFF2
+- **CAD / 3D 模型**：DXF, STL, OBJ, GLTF, GLB
+- **结构化数据**：JSON, CSV, TSV, XML
+- **字幕 / 歌词**：SRT, WebVTT, LRC, ELRC, ASS, SSA, TTML, DFXP
+- **压缩包**：ZIP
+- **文本**：Markdown, 代码文件（40+ 种语言语法高亮，含 Vue/Svelte 组件、Shell/Batch 脚本），各类纯文本
+
+## 包架构
+
+```
+@opsbli/file-preview-core    # 框架无关的核心工具（types/工具函数/PDF 配置）
+       │
+       ├── @opsbli/react-file-preview   # React 18+ 版本
+       └── @opsbli/vue-file-preview     # Vue 3 版本
+```
+
+两个 UI 包共享同一份纯 TS 工具与类型定义，并按各自框架惯例提供等价能力。
+
+## 许可证
+
+[MIT License](https://github.com/opsbli/doc-preview/blob/main/LICENSE)
