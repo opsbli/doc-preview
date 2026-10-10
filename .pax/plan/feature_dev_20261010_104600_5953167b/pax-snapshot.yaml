@@ -1,0 +1,211 @@
+# pax-snapshot.yaml
+# 由 pax-orchestrate 初始化（L0）
+# schema: <家族根>/schemas/snapshot.schema.json (version 2.0)
+# 家族运行时根: C:\Users\sam\Documents\skills\pax-skills
+# 上游任务: .pax/plan/doc_consult_20261010_104300_5953167b/（P0 缺口清单来源）
+
+meta:
+  version: 2.0
+  created_at: "2026-10-10T10:46:00+08:00"
+  updated_at: "2026-10-10T10:52:00+08:00"
+  skill_lineage:
+    - pax-orchestrate
+    - pax-clarify
+    - pax-plan
+
+goal:
+  statement: >-
+    按 doc_consult 任务产出的 P0 缺口清单，为 doc-preview 新增文件预览格式支持
+    （候选：eml 邮件、xls/xlsm 表格、tar/gzip/7z/rar/jar 压缩包、bpmn 流程图、
+    xmind 思维导图、tga 图片），并修复 .ppt 虚假映射等一致性缺陷。
+  success_criteria:
+    - 每项新增格式在 file-preview-core 的类型识别（MIME/扩展名）层正确路由，不再落入 unsupported。
+    - 每项新增格式在目标框架包中存在可用的渲染器并完成注册。
+    - 不破坏既有格式的类型识别与渲染（回归范围见 plan.verification_strategy）。
+    - 新增依赖（如有）已获得用户显式授权，且仅在对应包内声明。
+    - 构建与 lint 通过（pnpm run test / pnpm run lint / pnpm run build:lib）。
+  # 已由 pax-clarify 收敛并冻结
+
+consensus:
+  required_precision: medium
+  dimensions:
+    goal:
+      status: confirmed
+      content: >-
+        用户已确认范围 = 全部 9 项：I1 tga、I2 jar、I3 xmind、I4 eml、I5 tar/tgz/gz/7z/rar、
+        I6 bpmn、I7 xls/xlsm、I8 .ppt 虚假映射修复、I9 视频识别口径对齐。
+    success_criteria:
+      status: confirmed
+      content: 见 goal.success_criteria；用户已批准实现计划 .proma plan/p0-format-batch.md。
+    constraints:
+      status: confirmed
+      content: >-
+        AGENTS.md 硬约束：不改变既有业务逻辑、不重构无关代码、未获明确授权不得引入新依赖。
+        P0 多项需要新依赖（postal-mime / SheetJS xlsx / libarchive.js 或 fflate / bpmn-js 等），
+        因此依赖授权是本任务的前置决策，不是可选优化。
+        架构约束：纯前端实现，不引入任何服务端转换。
+    authorization:
+      status: confirmed
+      content: >-
+        用户批准：依赖 D1 postal-mime / D2 fflate / D3 libarchive.js / D4 bpmn-js / D5 xlsx(SheetJS)；
+        允许在可见终端执行 pnpm add（视作对项目网络规则的显式豁免）；
+        改动范围限定 core + react-file-preview + vue-file-preview + docs；
+        允许按里程碑 git commit。
+    exceptions:
+      status: not_applicable
+      content: 无。
+    terminology:
+      status: confirmed
+      content: >-
+        双端 = react-file-preview 与 vue-file-preview 同时实现（两包渲染器集合当前一致，各 19 个）。
+        零依赖项 = 无需新增 npm 依赖即可实现的格式。
+  design_tree:
+    - 新增 FileType 需同步 9 处：core types/fileType/mimeTypes + react (renderer/lazy/registry) + vue (renderer/lazy/registry)
+    - tga 复用 image 类型与既有高级图片解码管线（仅改 core）
+    - jar 复用 zip 类型（仅改 2 处映射）
+    - .ppt 修复放在渲染器层做 OLE 魔数检测，保留既有 FileType 映射与 tests/contracts.test.mjs 断言
+    - 解析器优先落入 core，渲染器按框架分落双端
+  gaps_remaining: []
+
+plan:
+  id: p0-format-batch-20261010
+  status: frozen
+  frozen_at: "2026-10-10T10:52:00+08:00"
+  frozen_by: user
+  steps:
+    - id: S1
+      action: core 新增 loaders/tgaLoader.ts（纯 TS TGA 解码：未压缩 + RLE，8/16/24/32bpp，含调色板）
+      rollback: 删除新文件
+    - id: S2
+      action: tga 接入 image 识别（mimeTypes / isAdvancedImageFormat / loaders registry / fileType）
+      rollback: 还原 4 处映射
+    - id: S3
+      action: jar 接入 zip 识别（fileType / mimeTypes）
+      rollback: 还原 2 处映射
+    - id: S4
+      action: 视频口径对齐（wmv/rm/rmvb/mpeg/mpg/swf/asf 纳入 video + BROWSER_UNSUPPORTED_EXTS）
+      rollback: 还原扩展名列表与集合
+    - id: S5
+      action: Pptx 渲染器 OLE 魔数检测，旧版二进制 .ppt 给出明确提示
+      rollback: 移除该分支
+    - id: S6
+      action: 补充 tests/contracts.test.mjs 代表性识别断言
+      rollback: 还原测试文件
+    - id: S7
+      action: core 新增 utils/xmindParser.ts（zip 解包 + content.json/content.xml）
+      rollback: 删除新文件
+    - id: S8
+      action: 双端新增 Mindmap 渲染器
+      rollback: 删除渲染器 + 还原 lazy/registry
+    - id: S9
+      action: mindmap 类型注册 9 处 + i18n
+      rollback: 还原注册
+    - id: S10
+      action: core 新增 utils/emlParser.ts（postal-mime）
+      rollback: 删除解析器 + 移除 D1
+    - id: S11
+      action: 双端新增 Eml 渲染器
+      rollback: 删除渲染器 + 还原注册
+    - id: S12
+      action: eml 类型注册 9 处 + i18n
+      rollback: 还原注册
+    - id: S13
+      action: core 新增 utils/archiveReader.ts（fflate + libarchive.js 统一入口）
+      rollback: 删除新文件 + 移除 D2/D3
+    - id: S14
+      action: 双端新增 Archive 渲染器（复用 Zip 树形 UI）
+      rollback: 删除渲染器 + 还原注册
+    - id: S15
+      action: archive 类型注册 9 处 + i18n
+      rollback: 还原注册
+    - id: S16
+      action: 双端新增 Bpmn 渲染器（bpmn-js 动态 import）
+      rollback: 删除渲染器 + 还原注册
+    - id: S17
+      action: bpmn 类型注册 9 处 + i18n
+      rollback: 还原注册
+    - id: S18
+      action: xlsm 复用 xlsx 识别并验证 exceljs 可读
+      rollback: 还原映射
+    - id: S19
+      action: core 新增 utils/xlsDataConverter.ts（SheetJS → x-data-spreadsheet 模型）
+      rollback: 删除新文件 + 移除 D5
+    - id: S20
+      action: 两个 Xlsx 渲染器按扩展名分派（.xls 走 SheetJS，其余不变）
+      rollback: 还原分派分支
+    - id: S21
+      action: 更新 packages/docs/guide/supported-types.md（新增条目 + 能力边界章节）
+      rollback: git checkout 该文件
+    - id: S22
+      action: 更新 README.md / README.zh-CN.md 支持格式表（保持 tests 断言通过）
+      rollback: git checkout 两个 README
+    - id: S23
+      action: 样例文件与示例入口（若不允许改 example 则跳过并说明）
+      rollback: 删除样例与入口
+    - id: S24
+      action: 全量验证 pnpm run test / pnpm run lint / pnpm run build:lib
+      rollback: 不适用
+    - id: S25
+      action: 按里程碑 git commit
+      rollback: git revert 对应提交
+  dependencies:
+    - S2 依赖 S1
+    - S9 依赖 S7,S8
+    - S12 依赖 S10,S11
+    - S13 依赖 D2,D3 安装
+    - S14 依赖 S13
+    - S15 依赖 S13,S14
+    - S16,S17 依赖 D4 安装
+    - S19,S20 依赖 D5 安装
+    - S24 依赖全部
+  evidence:
+    - 现状证据：.pax/docs/doc_consult_20261010_104300_5953167b/format-support-gap-analysis.md
+    - 识别层现状：packages/file-preview-core/src/utils/fileType.ts、mimeTypes.ts
+    - 高级图片管线：packages/file-preview-core/src/loaders/registry.ts、workers/workerClient.ts
+    - 既有回归断言：tests/contracts.test.mjs（含 slides.ppt → pptx）
+  verification_strategy:
+    - step: S1-S6
+      check: pnpm run test（core 构建 + node --test）识别断言通过；lint 0 警告
+    - step: S7-S20
+      check: 各里程碑结束后 pnpm run build:lib 通过，双端示例手工打开对应格式
+    - step: S24
+      check: pnpm run test && pnpm run lint && pnpm run build:lib 全部通过
+    - regression:
+      - .zip / .xlsx / .ppt→pptx 路径无行为变化
+      - Image 高级格式（HEIC/AVIF/TIFF/RAW/PSD/JP2）解码链路无回归
+      - tests/contracts.test.mjs 既有断言保持通过
+  rollback_strategy:
+    on_failure: 按 step.rollback 就地还原
+    on_alert: 停止后续里程碑，保留已通过提交
+    default: git revert 对应里程碑提交；全局放弃可 reset --hard 回到 a8800f8
+
+orchestration:
+  intent:
+    primary: feature_dev
+    secondary: []
+    classification_rationale: >-
+      用户诉求为「新增尚未支持的格式能力」，属新建功能，无既有行为异常/报错/退化描述，
+      故 primary=feature_dev，不做 diagnose_fix。
+      未命中二级意图：任务本身不涉及具体敏感字段（不标 security）、不涉及既有数据不一致（不标 data_integrity）、
+      虽为前端包但目标不是修前端缺陷（不标 ux_error）。
+      .ppt 映射缺陷虽属缺陷，但它是本次顺带修复项，不改变主干意图分类。
+  risk:
+    irreversibility: 1
+    impact_scope: 2
+    uncertainty: 2
+    coordination_cost: 2
+    total: 7
+    level: medium
+    forced_escalation: false
+  diagnose_required: false
+  rationale: >-
+    feature_dev 属默认跳过诊断：新增格式支持无既有行为可诊断，
+    且 P0 清单的可行性已由 doc_consult 任务给出代码级证据（fileType.ts / mimeTypes.ts / registry）。
+  skip_reason: new_feature_no_prior_behavior
+  route:
+    - clarify
+    - plan
+    - execute
+    - review
+  question_strategy: batch
+  annotations: {}

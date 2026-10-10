@@ -1,0 +1,83 @@
+# pax-snapshot.yaml
+# 由 pax-orchestrate 初始化（L0）
+# schema: <家族根>/schemas/snapshot.schema.json (version 2.0)
+# 家族运行时根: C:\Users\sam\Documents\skills\pax-skills
+
+meta:
+  version: 2.0
+  created_at: "2026-10-10T10:43:00+08:00"
+  updated_at: "2026-10-10T10:43:00+08:00"
+  skill_lineage:
+    - pax-orchestrate
+    - pax-clarify
+
+goal:
+  statement: >-
+    梳理 doc-preview（React + Vue 文件预览组件库 Monorepo）当前支持的文件预览类型，
+    对标 kkFileView（https://www.kkview.cn/zh-cn/docs/home.html）的格式支持清单，
+    输出「常用但尚未支持」的格式缺口与可行的接入方式建议。
+  success_criteria:
+    - 给出 doc-preview 已支持格式的完整清单，并标注类型识别路径（MIME / 扩展名 / 魔数）与解析库。
+    - 给出 kkFileView 支持的格式清单，作为对标基线并注明来源。
+    - 给出双方差异矩阵，区分「doc-preview 独有」「双方共有」「kkFileView 独有」三态。
+    - 给出缺口清单，按「常用程度 × 纯前端可行性」分级，并给出每种格式的候选实现路径。
+    - 每条结论可追溯到代码位置或对标来源证据。
+
+consensus:
+  required_precision: low
+  dimensions:
+    goal:
+      status: confirmed
+      content: 格式支持范围调研 + 对标 + 缺口清单，不涉及代码变更。
+    success_criteria:
+      status: confirmed
+      content: 见 goal.success_criteria（5 项）。
+    constraints:
+      status: confirmed
+      content: >-
+        doc-preview 是纯前端（浏览器内）组件库，不具备 kkFileView 的服务端转换链路
+        （LibreOffice / ImageMagick / FFmpeg 等）；任何缺口评估必须以「纯前端可实现性」为前提。
+        项目 AGENTS.md 规定联网须走 MCP chrome_devtools，但当前工作区未配置任何 MCP server，
+        本次改用 Proma 内置受管浏览器读取公开文档，偏差已显式标注。
+    authorization:
+      status: confirmed
+      content: 只读分析 + 文档产出；不修改业务代码、不新增依赖、不执行构建/git 写入。
+    exceptions:
+      status: not_applicable
+      content: 无。
+    terminology:
+      status: confirmed
+      content: >-
+        「缺口」= kkFileView 支持、doc-preview 不支持、且属于常见场景的格式；
+        「已支持」= 存在对应 FileType 枚举、渲染器注册项，或落入 text/image 等通用渲染分支。
+  design_tree: []
+  gaps_remaining: []
+
+orchestration:
+  intent:
+    primary: doc_consult
+    secondary: []
+    classification_rationale: >-
+      用户诉求为「梳理 / 对标 / 看看还有哪些」，属于纯调研与规划，未要求修改代码或数据；
+      无缺陷信号（无报错、无退化描述），故 primary=doc_consult。
+      未命中 performance / security / data_integrity / ux_error / integration / deployment 二级意图：
+      虽然被调研对象是前端库，但任务本身不涉及前端缺陷修复，不标 ux_error。
+  risk:
+    irreversibility: 1
+    impact_scope: 1
+    uncertainty: 2
+    coordination_cost: 1
+    total: 5
+    level: low
+    forced_escalation: false
+  diagnose_required: false
+  rationale: >-
+    doc_consult 属于强制跳过诊断的意图（无既有行为缺陷，产出为文档/分析）。
+    不确定性取 2 的保守口径：交付边界（是否继续进入实现）尚未与用户确认，
+    且对标数据源可用性存在前置假设。
+  skip_reason: doc_consult_only
+  route:
+    - clarify
+    - docs
+  question_strategy: batch
+  annotations: {}
