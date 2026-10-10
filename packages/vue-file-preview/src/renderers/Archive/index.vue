@@ -33,6 +33,7 @@ const selectedName = ref('');
 const selectedUrl = ref('');
 const previewLoading = ref(false);
 const previewError = ref<string | null>(null);
+let archiveHandle: ArchiveHandle | null = null;
 
 const formatSize = (bytes: number) => {
   if (bytes > 1048576) return `${(bytes / 1048576).toFixed(1)} MB`;
@@ -87,10 +88,18 @@ const selectEntry = async (entry: ZipEntryInfo) => {
   }
 };
 
+const disposeArchive = () => {
+  if (archiveHandle) {
+    archiveHandle.dispose();
+    archiveHandle = null;
+  }
+};
+
 const load = async () => {
   loading.value = true;
   error.value = null;
   archive.value = null;
+  disposeArchive();
   releaseBlobUrl();
   selectedPath.value = null;
   selectedName.value = '';
@@ -101,7 +110,9 @@ const load = async () => {
       throw new Error(`文件加载失败 (${response.status})`);
     }
     const buffer = await response.arrayBuffer();
-    archive.value = await loadArchive(buffer, props.fileName);
+    const handle = await loadArchive(buffer, props.fileName);
+    archiveHandle = handle;
+    archive.value = handle;
   } catch (err) {
     console.error('压缩包解析错误:', err);
     error.value = err instanceof Error && err.message ? err.message : t.value('archive.parse_failed');
@@ -112,7 +123,10 @@ const load = async () => {
 
 watch(() => [props.url, props.fileName], load, { immediate: true });
 
-onBeforeUnmount(() => releaseBlobUrl());
+onBeforeUnmount(() => {
+  releaseBlobUrl();
+  disposeArchive();
+});
 
 const getToolbarGroups = (): ToolbarGroup[] => [];
 

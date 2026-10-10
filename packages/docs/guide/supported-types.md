@@ -355,14 +355,24 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - **JAR** - `.jar`（本质为 ZIP，复用 ZIP 渲染器）
 - **TAR** - `.tar`
 - **TAR.GZ / TGZ / GZ** - `.tar.gz`, `.tgz`, `.gz`（单文件 `.gz` 会解出唯一文件）
+- **7Z** - `.7z`
+- **RAR** - `.rar`（含 RAR5，只读）
 
 ### 特性
 
 - ZIP 基于 @zip.js/zip.js 解析压缩包目录结构，**支持加密 ZIP**（传统 ZipCrypto / AES，自动弹出密码输入框，错误密码可重试 3 次）
 - TAR 由内置解析器处理（ustar / GNU longname / PAX 扩展头 / base-256 数值），GZIP 由 fflate 按需加载解压
+- 7Z / RAR 在 **Web Worker** 中经 7z-wasm（7-Zip 24.09 的 WASM 构建）解压，不阻塞主线程；wasm 已内联进按需 chunk，使用方无需额外部署静态资源
 - 左侧条目列表 + 右侧内嵌预览
 - 内嵌预览任意受支持的格式（文本、代码、图片、Office 等），条目较多时仅渲染前 2000 项
-- `7z` / `rar` 见下方「能力边界」
+- 受限项：加密 7z 归档（需要密码）不在支持范围内；RAR 仅支持解压读取
+
+### 体积与第三方许可
+
+7Z / RAR 能力对应的 chunk 约 3.0MB（gzip 后约 1.24MB），**仅在使用方预览 7z / rar 时下载**，不影响首屏。
+该 chunk 内嵌 7z-wasm（7-Zip 24.09），采用 **GNU LGPL-2.1-or-later + unRAR restriction**，
+许可声明见仓库根 `NOTICE` 与 `packages/file-preview-core/NOTICE`，许可全文见
+`packages/file-preview-core/licenses/`。
 
 ## 纯文本
 
@@ -412,7 +422,6 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 | `wmf`、`emf` | Windows 矢量图元文件，浏览器无渲染器 |
 | `dwg` | 需 WASM 或服务端转换 |
 | `ofd`、`rtf`、`drawio`、`dcm` | 尚未接入（均具备前端可行路径，见后续规划） |
-| `7z`、`rar` | WASM 解压器（如 libarchive.js）的 worker 硬编码同目录 `.wasm`，库打包场景需使用方额外部署静态资源，与本库自包含、按需 chunk 的设计冲突，故本版本未内置；解析时会给出明确提示。请先解压为 ZIP / TAR / GZ 后预览 |
 | `wmv`、`rm`、`rmvb`、`mpeg`、`mpg`、`swf`、`avi`、`flv` | 浏览器无法解码，需服务端转码 |
 
 ## 文件类型检测

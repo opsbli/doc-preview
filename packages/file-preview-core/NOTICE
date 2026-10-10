@@ -1,0 +1,32 @@
+@opsbli/file-preview-core 第三方组件与许可声明
+=============================================
+
+本包在构建产物中包含以下第三方组件，其许可条款独立于本包的 MIT 许可：
+
+1) 7z-wasm（7-Zip 的 WebAssembly 构建）
+   - 来源：https://github.com/use-strict/7z-wasm
+   - 上游：7-Zip 24.09，Copyright (C) 1999-2024 Igor Pavlov（https://www.7-zip.org）
+   - 许可：GNU LGPL-2.1-or-later + unRAR restriction
+   - 全文见：licenses/7z-wasm-License.txt
+
+   说明：构建时把 7z-wasm 的 7zz.wasm（上游未经修改的构建产物）以内联 base64 的形式
+   打入按需加载的 chunk（lib/archiveWorkerClient-*.js），用于在 Web Worker 中解压
+   7z / rar 归档。该 chunk 仅在使用方预览 7z / rar 文件时才被下载。
+
+   对应源码获取方式（LGPL 要求）：
+   - 7z-wasm 源码：https://github.com/use-strict/7z-wasm
+   - 7-Zip 源码：https://www.7-zip.org/download.html
+   - 本包内嵌的即上述上游构建产物，未作修改，可自行重新构建并替换该 chunk。
+
+2) unRAR（包含在上述 7-Zip / 7z-wasm 构建中，用于读取 RAR 归档）
+   - 许可：unRAR restriction
+   - 全文见：licenses/7z-wasm-unRarLicense.txt
+   - 必须声明的限制：
+     * unRAR 源码可用于任何软件以处理 RAR 归档，无需付费、不受限制；
+     * 但不得用于重建 RAR 压缩算法（该算法为专有）；
+     * 以修改形式或以其他软件的一部分分发 unRAR 源码是允许的，
+       但必须在文档与源码注释中明确声明：该代码不得用于开发与 RAR（WinRAR）
+       兼容的压缩工具；
+     * 任何人或公司不得就 unRAR 的分发收取费用。
+
+本包的其余部分采用 MIT 许可，全文见 LICENSE。

@@ -370,12 +370,94 @@ test('archive reader covers tar, tar.gz and single-file gzip', async () => {
   assert.equal(await soloHandle.readText('note.txt'), 'plain text');
 });
 
-test('archive reader rejects 7z/rar with an explicit message', async () => {
+test('sevenZipCore lists and extracts a real 7z archive', async () => {
   const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
-  const { loadArchive } = await import(coreUrl);
+  const { openSevenZipArchive } = await import(coreUrl);
 
-  await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.7z'), /WASM/);
-  await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.rar'), /WASM/);
+  // 用已安装的 7z-wasm 构造真实 7z 归档（同时验证 wasm 可独立于 Vite 运行）
+  const sevenZipDir = path.join(root, 'packages/file-preview-core/node_modules/7z-wasm');
+  const wasmBytes = await readFile(path.join(sevenZipDir, '7zz.wasm'));
+  const toArrayBuffer = (view) => view.buffer.slice(view.byteOffset, view.byteOffset + view.byteLength);
+  const wasmBinary = toArrayBuffer(wasmBytes);
+  const { default: SevenZip } = await import(pathToFileURL(path.join(sevenZipDir, '7zz.es6.js')).href);
+
+  const maker = await SevenZip({
+    wasmBinary: wasmBinary.slice(0),
+    noExitRuntime: true,
+    print: () => {},
+    printErr: () => {},
+  });
+  maker.FS.mkdir('dir');
+  maker.FS.writeFile('dir/inner.txt', new TextEncoder().encode('inner'));
+  maker.FS.writeFile('data.csv', new TextEncoder().encode('a,b\n1,2\n'));
+  maker.FS.writeFile('中文名.txt', new TextEncoder().encode('中文内容'));
+  maker.callMain(['a', '-t7z', 'pack.7z', 'dir', 'data.csv', '中文名.txt']);
+  const archiveBuffer = toArrayBuffer(maker.FS.readFile('pack.7z'));
+
+  // 再用本库的纯逻辑层打开并按需抽取（Node 下显式传入 wasm 字节）
+  const session = await openSevenZipArchive(SevenZip, archiveBuffer, 'pack.7z', wasmBinary.slice(0));
+  const paths = session.entries.map((entry) => `${entry.isDir ? 'd' : 'f'}:${entry.path}`);
+  assert.ok(paths.includes('d:dir/'), `缺少目录条目: ${JSON.stringify(paths)}`);
+  assert.ok(paths.includes('f:dir/inner.txt'), `缺少嵌套文件: ${JSON.stringify(paths)}`);
+  assert.ok(paths.includes('f:中文名.txt'), `中文名条目未正确解析: ${JSON.stringify(paths)}`);
+  assert.equal(session.entries.find((entry) => entry.path === 'data.csv').size, 8);
+  assert.equal(session.entries.find((entry) => entry.path === 'dir/').dir, '');
+  assert.equal(session.entries.find((entry) => entry.path === 'dir/inner.txt').dir, 'dir');
+
+  const inner = new TextDecoder().decode(await session.readFile('dir/inner.txt'));
+  assert.equal(inner, 'inner');
+  const csv = new TextDecoder().decode(await session.readFile('data.csv'));
+  assert.equal(csv, 'a,b\n1,2\n');
+  const chinese = new TextDecoder().decode(await session.readFile('中文名.txt'));
+  assert.equal(chinese, '中文内容');
+
+  session.dispose();
+  await assert.rejects(() => session.readFile('../escape.txt'), /路径不合法/);
+});
+
+test('parseSevenZipListing handles rar-style listing blocks', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { parseSevenZipListing } = await import(coreUrl);
+
+  const listing = [
+    '',
+    '7-Zip (z) 24.09 (LE) : Copyright (c) 1999-2024 Igor Pavlov : 2024-11-29',
+    '',
+    'Listing archive: sample.rar',
+    '',
+    '--',
+    'Path = sample.rar',
+    'Type = Rar5',
+    'Physical Size = 500',
+    '',
+    '----------',
+    'Path = docs/',
+    'Size = 0',
+    'Attributes = D drwxr-xr-x',
+    '',
+    'Path = docs/readme.txt',
+    'Size = 42',
+    'Attributes = A -rw-r--r--',
+    'Encrypted = -',
+    'Modified = 2026-10-10 11:00:00.0000000',
+    '',
+    'Path = secret.txt',
+    'Size = 7',
+    'Attributes = A -rw-r--r--',
+    'Encrypted = +',
+    '',
+  ].join('\n');
+
+  const entries = parseSevenZipListing(listing);
+  assert.deepEqual(
+    entries.map((entry) => `${entry.isDir ? 'd' : 'f'}:${entry.path}`),
+    ['d:docs/', 'f:docs/readme.txt', 'f:secret.txt'],
+  );
+  assert.equal(entries[1].size, 42);
+  assert.equal(entries[1].dir, 'docs');
+  assert.equal(entries[0].isDir, true);
+  assert.equal(entries[2].encrypted, true);
+  assert.ok(entries[1].date instanceof Date);
 });
 
 test('legacy .xls is converted through SheetJS into spreadsheet data', async () => {

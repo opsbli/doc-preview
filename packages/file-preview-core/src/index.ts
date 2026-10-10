@@ -103,9 +103,13 @@ export { sanitizeEmailHtml } from './utils/htmlSanitize';
 export { parseEml } from './utils/emlParser';
 export type { ParsedEml, EmailAddress, EmailAttachment } from './utils/emlParser';
 
-// 导出通用压缩包读取（tar / gzip；7z / rar 给出明确提示）
+// 导出通用压缩包读取（tar / gzip / 7z / rar）
 export { loadArchive, detectArchiveFormat } from './utils/archiveReader';
 export type { ArchiveFormat, ArchiveHandle } from './utils/archiveReader';
+
+// 导出 7z / rar 解压的纯逻辑层（供自定义渲染器与测试复用；不含 wasm 本体）
+export { openSevenZipArchive, parseSevenZipListing } from './utils/sevenZipCore';
+export type { SevenZipFactory, SevenZipModule, SevenZipSession } from './utils/sevenZipCore';
 
 // 导出 XMind 思维导图解析
 export { parseXmind, countMindmapNodes } from './utils/xmindParser';

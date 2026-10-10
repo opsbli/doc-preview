@@ -1,0 +1,127 @@
+# pax-snapshot.yaml
+# 由 pax-orchestrate 初始化（L0）
+# schema: <家族根>/schemas/snapshot.schema.json (version 2.0)
+# 家族运行时根: C:\Users\sam\Documents\skills\pax-skills
+# 上游: .pax/plan/feature_dev_20261010_104600_5953167b/（P0 批次，已完成；7z/rar 被收窄）
+
+meta:
+  version: 2.0
+  created_at: "2026-10-10T11:16:00+08:00"
+  updated_at: "2026-10-10T11:30:00+08:00"
+  skill_lineage:
+    - pax-orchestrate
+    - pax-clarify
+    - pax-plan
+    - pax-execute
+
+goal:
+  statement: >-
+    为 doc-preview 补齐 7z / rar 压缩包预览能力（在 P0 批次中因资源部署契约冲突被收窄），
+    随后评估并实现 P1 缺口批次（ofd / rtf / drawio / vsd-vsdx / dcm / three.js 可覆盖的 3D 扩展 / HTML 渲染模式）。
+    用户已确认顺序：先 7z/rar，再 P1。
+  success_criteria:
+    - 给出 7z/rar 的可行技术选型结论，含与之绑定的「使用方是否需要额外部署静态资源」契约。
+    - 选定方案后，core 可列举并读取 7z 与 rar 条目，双端 Archive 渲染器无需改动即可预览。
+    - WASM 解压器必须按需加载（对应 chunk 不进主 bundle），失败时给出明确提示而非静默失败。
+    - 方案落地后 pnpm run test / lint / build 全部通过。
+    - P1 批次逐项给出可行性、成本与依赖，经用户确认子集后再实现。
+
+consensus:
+  required_precision: medium
+  dimensions:
+    goal:
+      status: pending
+      content: 7z/rar 已明确；P1 子集待确认。
+    success_criteria:
+      status: pending
+      content: 见 goal.success_criteria；待技术验证后冻结。
+    constraints:
+      status: confirmed
+      content: >-
+        P0 已确认的架构约束继续生效：纯前端、不得要求使用方额外部署静态资源（除非用户显式接受该契约变更）、
+        WASM 必须按需加载、未获逐项授权不得新增依赖。
+    authorization:
+      status: confirmed
+      content: >-
+        用户批准引入 7z-wasm（A1 内联自包含形态），并批准本库产物内嵌其 LGPL-2.1+/unRAR 代码、随包附许可声明。
+        P1 批次的依赖仍待逐项确认。
+    exceptions:
+      status: not_applicable
+      content: 无。
+    terminology:
+      status: confirmed
+      content: >-
+        自包含 = 使用方无需在构建产物外额外部署 .wasm / worker 文件。
+        资源契约变更 = 需要使用方把 .wasm 或 worker 放到可访问路径并传入 URL。
+  design_tree:
+    - 选型结论：7z-wasm@1.2.0（基于 7-Zip 24.09）同时覆盖 7z 与 rar（随包附 unRarLicense.txt，keywords 含 rar）
+    - 自包含可行性已取证：SevenZipModuleOptions 含 wasmBinary: ArrayBuffer 与 locateFile，可注入 wasm 字节，免使用方部署资源
+    - 7zz.es6.js 无 import 语句、不引用 readline-sync（唯一 runtime 依赖只在 Node 分支）；仅含 ENVIRONMENT_IS_NODE 分支里的 require('fs'|'path'|'url'|'crypto')
+    - 交付形态（用户已选 A1）：构建时将 7zz.wasm 以 base64 内联进按需 chunk（约 2.2MB），并在包内附 7-Zip / unRAR 许可声明
+    - 执行环境（用户已选）：在 Web Worker 中执行（WORKERFS），不阻塞 UI
+    - 分层：纯编排逻辑放 utils/sevenZipCore.ts（可被 node 直接测试），worker 文件仅做 wasm 内联与消息转发
+    - 许可影响：本库产物将内嵌 LGPL-2.1+ 与 unRAR restriction 代码，需在 NOTICE/文档中声明；unRAR 不得用于再造 RAR 压缩算法，且不得对分发收费
+  gaps_remaining:
+    - rar 端到端验证需真实 .rar 样本（7-Zip 不能生成 rar）；能力以 7zz 编译进去的格式列表与随包 unRarLicense 为证，端到端待用户提供样本
+    - 同一 7z-wasm 实例能否重复 callMain（7z CLI 以单次执行为设计）需运行时验证；不行则改为每条命令新建实例
+
+orchestration:
+  intent:
+    primary: feature_dev
+    secondary: []
+    classification_rationale: >-
+      用户诉求为新增尚未支持的能力（7z/rar 解压、后续 P1 格式），无既有行为异常描述，故 feature_dev。
+      7z/rar 在 P0 中被「收窄」后给出的明确提示属于已交付行为，不是缺陷，不构成 diagnose_fix。
+      未命中二级意图：不涉及具体敏感字段（不标 security）；P1 的 vsdx/drawio 等尚无用户数据不一致报告（不标 data_integrity）。
+  risk:
+    irreversibility: 1
+    impact_scope: 2
+    uncertainty: 3
+    coordination_cost: 2
+    total: 8
+    level: medium
+    forced_escalation: false
+  diagnose_required: false
+  rationale: >-
+    feature_dev 默认跳过诊断：新增压缩格式支持无既有行为可诊断，
+    P0 阶段已定位收窄原因并有代码级证据（libarchive.js 的 worker 硬编码同目录 .wasm）。
+  skip_reason: new_feature_no_prior_behavior
+  route:
+    - clarify
+    - plan
+    - execute
+    - review
+  question_strategy: batch
+  annotations: {}
+
+execution:
+  id: sevenzip-integration-20261010
+  mode: normal
+  status: completed
+  completed_at: "2026-10-10T11:30:00+08:00"
+  log:
+    - 技术选型验证：确认 7z-wasm@1.2.0 同时包含 7z 与 RAR/RAR5（7z i 输出含 Rar / Rar5，随包附 unRarLicense.txt）
+    - 运行时验证：单实例在 noExitRuntime 下可重复 callMain（create → l -slt → x 均成功），模块实例化 7ms
+    - 解析格式验证：l -slt 输出为 元信息块 → ---------- → 每条目一个 key = value 块；中文路径与目录可正确解析
+    - 实现：utils/sevenZipCore.ts（纯逻辑）+ workers/archiveDecoder.worker.ts + workers/archiveWorkerClient.ts，接入 archiveReader
+    - 权限变更声明：新增 NOTICE（仓库根 + core 包）与 licenses/ 下两份上游许可全文，core 包 files 加入 NOTICE/licenses
+    - 文档：supported-types.md 压缩包章节改为支持 7z/rar（含体积与许可说明），能力边界表移除 7z/rar；双语 README 支持格式表补 7Z/RAR
+    - 验证：pnpm run test 15/15、lint 0 警告、pnpm run build 全量通过、样例端到端 29/29、出厂 worker 代码驱动验证 5/5
+  deviations:
+    - step: S13-of-this-task
+      change: 原计划「客户端内联 base64 wasm 并传给 Worker」改为「wasm 由 Worker 自身内联」
+      reason: >-
+        Vite 5 的 wasm 插件会拦截 .wasm?inline，无法用 ?inline 内联；改为构建期生成 base64 模块后又发现
+        ?worker&inline 已把 wasm 作为 data URL 内联进 worker bundle，导致同一份 wasm 被打包两次（5.25MB）。
+        收敛为只保留 worker 内联（最终单 chunk 3.05MB / gzip 1.24MB），并删除多余的生成脚本与 2.2MB 生成源码。
+      authorized_by: 属于实现细节优化，未改变用户已批准的 A1（自包含）与 Worker 执行两个决策
+  changes:
+    - core: src/utils/sevenZipCore.ts（新增）、src/workers/archiveDecoder.worker.ts（新增）、src/workers/archiveWorkerClient.ts（新增）
+    - core: src/utils/archiveReader.ts（7z/rar 路由到 Worker；ArchiveHandle 增加 dispose）、src/index.ts（导出纯逻辑层）
+    - core: package.json（新增 7z-wasm 依赖、files 加入 NOTICE/licenses）
+    - NOTICE（新增）、packages/file-preview-core/NOTICE（新增）、packages/file-preview-core/licenses/（新增两份上游许可全文）
+    - react/vue: renderers/Archive 增加句柄 dispose（切换文件与卸载时终止 Worker）
+    - tests/contracts.test.mjs：移除 7z/rar 拒绝断言，新增 sevenZipCore 真实 7z 往返与 rar 风格列表解析用例
+    - docs: supported-types.md、README.md、README.zh-CN.md
+  commits:
+    - 待提交（本阶段收尾）

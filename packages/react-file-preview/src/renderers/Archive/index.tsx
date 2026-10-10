@@ -53,6 +53,7 @@ export const ArchiveRenderer = forwardRef<RendererHandle, ArchiveRendererProps>(
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const blobUrlRef = useRef<string | null>(null);
+  const archiveRef = useRef<ArchiveHandle | null>(null);
 
   /** 释放上一个条目预览的 blob URL */
   const releaseBlobUrl = useCallback(() => {
@@ -79,7 +80,12 @@ export const ArchiveRenderer = forwardRef<RendererHandle, ArchiveRendererProps>(
         }
         const buffer = await response.arrayBuffer();
         const handle = await loadArchive(buffer, fileName);
-        if (!isMounted) return;
+        if (!isMounted) {
+          handle.dispose();
+          return;
+        }
+        archiveRef.current?.dispose();
+        archiveRef.current = handle;
         setArchive(handle);
       } catch (err) {
         if (!isMounted) return;
@@ -93,6 +99,8 @@ export const ArchiveRenderer = forwardRef<RendererHandle, ArchiveRendererProps>(
     load();
     return () => {
       isMounted = false;
+      archiveRef.current?.dispose();
+      archiveRef.current = null;
     };
   }, [url, fileName, fetcher, t]);
 

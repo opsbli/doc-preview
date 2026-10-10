@@ -16,8 +16,12 @@ import { decodeText } from './textDecoder';
 /** 支持的压缩包容器格式 */
 export type ArchiveFormat = 'tar' | 'gzip' | 'zip' | '7z' | 'rar';
 
-/** 解析后的压缩包句柄（与 ZipHandle 同形） */
-export type ArchiveHandle = ZipHandle & { format: ArchiveFormat };
+/** 解析后的压缩包句柄（与 ZipHandle 同形，并支持释放 Worker 侧资源） */
+export type ArchiveHandle = ZipHandle & {
+  format: ArchiveFormat;
+  /** 释放解压器占用的资源（zip/tar/gzip 为空操作，7z/rar 会终止 Worker） */
+  dispose(): void;
+};
 
 const BLOCK_SIZE = 512;
 
@@ -188,6 +192,9 @@ function createHandle(
   return {
     format,
     entries,
+    dispose(): void {
+      contents.clear();
+    },
     async readBlob(path: string, mimeType?: string): Promise<Blob> {
       const data = contents.get(path);
       if (!data) throw new Error(`压缩包条目不存在: ${path}`);
@@ -222,9 +229,9 @@ export async function loadArchive(buffer: ArrayBuffer, fileName?: string): Promi
   }
 
   if (format === '7z' || format === 'rar') {
-    throw new Error(
-      `${format.toUpperCase()} 需要额外的 WASM 解压资源，本版本未内置。请先解压为 ZIP / TAR / GZ 后再预览。`,
-    );
+    // 在 Worker 中经 7z-wasm 解压（wasm 内联，按需加载）
+    const { openSevenZipArchiveHandle } = await import('../workers/archiveWorkerClient');
+    return openSevenZipArchiveHandle(buffer, fileName ?? `archive.${format}`);
   }
 
   if (format === 'tar') {
@@ -270,6 +277,9 @@ export async function loadArchive(buffer: ArrayBuffer, fileName?: string): Promi
   return {
     format: 'zip',
     entries: zipHandle.entries,
+    dispose(): void {
+      // no-op
+    },
     readBlob: (path, mimeType) => zipHandle.readBlob(path, mimeType),
     readText: (path) => zipHandle.readText(path),
   };

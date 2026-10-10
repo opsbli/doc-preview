@@ -1,0 +1,23 @@
+第三方组件与许可声明
+====================
+
+本仓库的发布产物（@opsbli/file-preview-core 及其 React / Vue 绑定包）包含第三方组件，
+其许可条款独立于本仓库的 MIT 许可。
+
+当前包含：
+
+- 7z-wasm（7-Zip 24.09 的 WebAssembly 构建）
+  许可：GNU LGPL-2.1-or-later + unRAR restriction
+  用途：在 Web Worker 中解压 7z / rar 归档（内联于按需加载的 chunk）
+  详情与完整声明：packages/file-preview-core/NOTICE
+  许可全文：packages/file-preview-core/licenses/
+
+关键限制（unRAR restriction）：
+- 可用于任何软件处理 RAR 归档，无需付费、不受限制；
+- 不得用于重建 RAR 压缩算法，也不得用于开发与 RAR（WinRAR）兼容的压缩工具；
+- 不得就 unRAR 的分发收取费用。
+
+其余依赖（pdfjs-dist、mammoth、exceljs、SheetJS(xlsx)、pptx-preview、video.js、three、
+shiki、foliate-js、@zip.js/zip.js、fflate、postal-mime、bpmn-js、opentype.js、utif、
+ag-psd、heic2any、@jsquash/avif、jpeg2000、@cornerstonejs/codec-openjpeg 等）
+按其各自许可分发，均为经由 npm 正常声明的依赖。
