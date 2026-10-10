@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import ExcelJS from 'exceljs';
 import Spreadsheet from 'x-data-spreadsheet';
+import { convertXlsToSpreadsheetData } from '@opsbli/file-preview-core';
+import type { XSheetData } from '@opsbli/file-preview-core';
 import { convertWorkbookToSpreadsheetData } from '../../utils/excelDataConverter';
 import { useTranslator } from '../../i18n/LocaleContext';
 import { useFetcher } from '../../RequestContext';
@@ -9,9 +11,11 @@ import type { RendererHandle } from '../base.types';
 
 interface XlsxRendererProps {
   url: string;
+  /** 原始文件名（用于区分 .xls 旧版二进制与 OOXML） */
+  fileName?: string;
 }
 
-export const XlsxRenderer = forwardRef<RendererHandle, XlsxRendererProps>(({ url }, ref) => {
+export const XlsxRenderer = forwardRef<RendererHandle, XlsxRendererProps>(({ url, fileName }, ref) => {
   const t = useTranslator();
   const fetcher = useFetcher();
   const [loading, setLoading] = useState(true);
@@ -151,12 +155,15 @@ export const XlsxRenderer = forwardRef<RendererHandle, XlsxRendererProps>(({ url
           throw new Error('文件为空');
         }
 
-        // 使用 exceljs 解析
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(arrayBuffer);
-
-        // 转换为 x-data-spreadsheet 数据格式
-        const sheetData = convertWorkbookToSpreadsheetData(workbook);
+        // .xls（BIFF8）exceljs 不支持，改用 SheetJS；其余保持 exceljs 路径不变
+        let sheetData: XSheetData[];
+        if (/\.xls$/i.test(fileName ?? '')) {
+          sheetData = await convertXlsToSpreadsheetData(arrayBuffer);
+        } else {
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(arrayBuffer);
+          sheetData = convertWorkbookToSpreadsheetData(workbook);
+        }
 
         if (!isMounted) return;
 
@@ -194,7 +201,7 @@ export const XlsxRenderer = forwardRef<RendererHandle, XlsxRendererProps>(({ url
       }
       spreadsheetRef.current = null;
     };
-  }, [url, mountSpreadsheet]);
+  }, [url, fileName, mountSpreadsheet]);
 
   // 暴露接口给父组件
   useImperativeHandle(ref, () => ({

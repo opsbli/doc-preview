@@ -27,7 +27,7 @@ export function getFileType(file: PreviewFile): FileType {
   if (mimeType.includes('wordprocessingml') || ext === 'docx') {
     return 'docx';
   }
-  if (mimeType.includes('spreadsheetml') || ext === 'xlsx') {
+  if (mimeType.includes('spreadsheetml') || ext === 'xlsx' || ext === 'xls' || ext === 'xlsm') {
     return 'xlsx';
   }
   if (mimeType.includes('presentationml') || ext === 'pptx' || ext === 'ppt') {

@@ -5,13 +5,16 @@ import type { ToolbarGroup } from '../toolbar.types';
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import ExcelJS from 'exceljs';
 import Spreadsheet from 'x-data-spreadsheet';
-import { convertWorkbookToSpreadsheetData } from '@opsbli/file-preview-core';
+import { convertWorkbookToSpreadsheetData, convertXlsToSpreadsheetData } from '@opsbli/file-preview-core';
+import type { XSheetData } from '@opsbli/file-preview-core';
 import { useTranslator } from '../../composables/useTranslator';
 import { useFetcher } from '../../composables/useRequest';
 import RendererError from '../RendererError.vue';
 
 const props = defineProps<{
   url: string;
+  /** 原始文件名（用于区分 .xls 旧版二进制与 OOXML） */
+  fileName?: string;
 }>();
 
 const { t } = useTranslator();
@@ -91,9 +94,15 @@ const loadExcel = async () => {
       throw new Error('文件为空');
     }
 
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(arrayBuffer);
-    const data = convertWorkbookToSpreadsheetData(workbook);
+    // .xls（BIFF8）exceljs 不支持，改用 SheetJS；其余保持 exceljs 路径不变
+    let data: XSheetData[];
+    if (/\.xls$/i.test(props.fileName ?? '')) {
+      data = await convertXlsToSpreadsheetData(arrayBuffer);
+    } else {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
+      data = convertWorkbookToSpreadsheetData(workbook);
+    }
 
     sheetData = data as unknown as Record<string, unknown>[];
     mountSpreadsheet();
@@ -142,8 +151,8 @@ onMounted(() => {
 });
 
 watch(
-  () => props.url,
-  (newUrl) => {
+  () => [props.url, props.fileName],
+  ([newUrl]) => {
     // 只有 URL 有效时才加载（避免空字符串或已 revoke 的 blob URL）
     if (newUrl) loadExcel();
   }

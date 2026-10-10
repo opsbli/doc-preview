@@ -95,6 +95,7 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
     component: XlsxRenderer,
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
+      fileName: ctx.currentFile.name,
     }),
   },
   {

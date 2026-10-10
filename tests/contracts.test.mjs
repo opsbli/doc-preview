@@ -54,6 +54,8 @@ test('file type detection covers documented representative formats', async () =>
     'pkg.7z': 'archive',
     'pkg.rar': 'archive',
     'process.bpmn': 'bpmn',
+    'legacy.xls': 'xlsx',
+    'macro.xlsm': 'xlsx',
   };
 
   for (const [name, expected] of Object.entries(cases)) {
@@ -374,6 +376,33 @@ test('archive reader rejects 7z/rar with an explicit message', async () => {
 
   await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.7z'), /WASM/);
   await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.rar'), /WASM/);
+});
+
+test('legacy .xls is converted through SheetJS into spreadsheet data', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { convertXlsToSpreadsheetData } = await import(coreUrl);
+
+  // 用已安装的 SheetJS 构造真实 BIFF8 文件，验证旧版 .xls 解析路径
+  const xlsxUrl = pathToFileURL(
+    path.join(root, 'packages/file-preview-core/node_modules/xlsx/xlsx.mjs'),
+  ).href;
+  const XLSX = await import(xlsxUrl);
+
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([
+    ['Name', 'Qty'],
+    ['Apple', 3],
+  ]);
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  const buffer = XLSX.write(workbook, { type: 'array', bookType: 'biff8' });
+
+  const sheets = await convertXlsToSpreadsheetData(buffer);
+  assert.equal(sheets.length, 1);
+  assert.equal(sheets[0].name, 'Sheet1');
+  assert.equal(sheets[0].rows['0'].cells['0'].text, 'Name');
+  assert.equal(sheets[0].rows['0'].cells['1'].text, 'Qty');
+  assert.equal(sheets[0].rows['1'].cells['0'].text, 'Apple');
+  assert.equal(sheets[0].rows['1'].cells['1'].text, '3');
 });
 
 test('request factory merges headers and delegates to the handler', async () => {

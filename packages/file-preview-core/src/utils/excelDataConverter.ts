@@ -1,7 +1,7 @@
 import type { Workbook, Worksheet, Cell, Fill, Border as ExcelBorder } from 'exceljs';
 
 // x-data-spreadsheet 数据格式类型
-interface XCellStyle {
+export interface XCellStyle {
   align?: 'left' | 'center' | 'right';
   valign?: 'top' | 'middle' | 'bottom';
   font?: {
@@ -23,18 +23,18 @@ interface XCellStyle {
   };
 }
 
-interface XCellData {
+export interface XCellData {
   text: string;
   style?: number;
   merge?: [number, number];
 }
 
-interface XRowData {
+export interface XRowData {
   height?: number;
   cells: Record<string, XCellData>;
 }
 
-interface XSheetData {
+export interface XSheetData {
   name: string;
   styles?: XCellStyle[];
   merges?: string[];

@@ -39,6 +39,8 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   pdf: 'application/pdf',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  xlsm: 'application/vnd.ms-excel.sheet.macroEnabled.12',
+  xls: 'application/vnd.ms-excel',
   pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   ppt: 'application/vnd.ms-powerpoint',
 

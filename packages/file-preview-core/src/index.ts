@@ -84,6 +84,10 @@ export type { ZipEntryInfo, ZipTreeNode, ZipHandle } from './utils/zipReader';
 
 // 导出 Excel 数据转换
 export { convertWorkbookToSpreadsheetData, convertCsvToSpreadsheetData } from './utils/excelDataConverter';
+export type { XCellStyle, XCellData, XRowData, XSheetData } from './utils/excelDataConverter';
+
+// 导出旧版二进制 Excel（.xls）数据转换
+export { convertXlsToSpreadsheetData } from './utils/xlsDataConverter';
 
 // 导出二进制容器探测（旧版 Office 二进制格式识别）
 export { isOleCompoundDocument } from './utils/binaryFormat';
