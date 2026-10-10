@@ -99,6 +99,10 @@ export { sanitizeEmailHtml } from './utils/htmlSanitize';
 export { parseEml } from './utils/emlParser';
 export type { ParsedEml, EmailAddress, EmailAttachment } from './utils/emlParser';
 
+// 导出通用压缩包读取（tar / gzip；7z / rar 给出明确提示）
+export { loadArchive, detectArchiveFormat } from './utils/archiveReader';
+export type { ArchiveFormat, ArchiveHandle } from './utils/archiveReader';
+
 // 导出 XMind 思维导图解析
 export { parseXmind, countMindmapNodes } from './utils/xmindParser';
 export type { MindmapNode, MindmapSheet, ParsedXmind } from './utils/xmindParser';

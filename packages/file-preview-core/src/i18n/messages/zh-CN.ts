@@ -149,6 +149,14 @@ export const zhCN: Messages = {
   'eml.parse_failed': 'EML 邮件解析失败',
   'eml.no_subject': '（无主题）',
   'eml.empty_body': '（正文为空）',
+
+  // ─────── archive ───────
+  'archive.loading': '加载压缩包中...',
+  'archive.load_failed': '压缩包加载失败',
+  'archive.parse_failed': '压缩包解析失败',
+  'archive.empty': '压缩包为空',
+  'archive.select_hint': '从左侧选择文件以预览',
+  'archive.truncated': '条目较多，仅显示前 {count} 个',
   'mindmap.topics': '{count} 个主题',
 
   // ─────── text ───────

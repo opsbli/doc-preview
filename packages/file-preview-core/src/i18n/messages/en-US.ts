@@ -149,6 +149,14 @@ export const enUS: Messages = {
   'eml.parse_failed': 'Failed to parse EML email',
   'eml.no_subject': '(No subject)',
   'eml.empty_body': '(Empty body)',
+
+  // ─────── archive ───────
+  'archive.loading': 'Loading archive...',
+  'archive.load_failed': 'Failed to load archive',
+  'archive.parse_failed': 'Failed to parse archive',
+  'archive.empty': 'The archive is empty',
+  'archive.select_hint': 'Select a file on the left to preview',
+  'archive.truncated': 'Too many entries, showing the first {count}',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

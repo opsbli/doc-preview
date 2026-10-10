@@ -72,7 +72,6 @@
     "@zip.js/zip.js": "^2.8.45",
     "fflate": "^0.8.3",
     "jpeg2000": "^1.1.1",
-    "libarchive.js": "^2.0.2",
     "postal-mime": "^4.0.5",
     "xlsx": "^0.18.5"
   }

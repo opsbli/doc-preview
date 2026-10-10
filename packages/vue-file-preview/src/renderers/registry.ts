@@ -22,6 +22,7 @@ import {
   CadRenderer,
   MindmapRenderer,
   EmlRenderer,
+  ArchiveRenderer,
 } from './lazy';
 
 /**
@@ -220,6 +221,14 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
     component: EmlRenderer,
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
+    }),
+  },
+  {
+    fileType: 'archive',
+    component: ArchiveRenderer,
+    getProps: (ctx) => ({
+      url: ctx.resolvedUrl,
+      fileName: ctx.currentFile.name,
     }),
   },
 ];

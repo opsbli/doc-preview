@@ -72,6 +72,19 @@ export function getFileType(file: PreviewFile): FileType {
   if (ext === 'xmind' || mimeType === 'application/x-xmind') {
     return 'mindmap';
   }
+  if (
+    ['tar', 'tgz', 'gz', '7z', 'rar'].includes(ext) ||
+    [
+      'application/x-tar',
+      'application/gzip',
+      'application/x-gzip',
+      'application/x-7z-compressed',
+      'application/vnd.rar',
+      'application/x-rar-compressed',
+    ].includes(mimeType)
+  ) {
+    return 'archive';
+  }
   if (ext === 'eml' || mimeType === 'message/rfc822') {
     return 'eml';
   }

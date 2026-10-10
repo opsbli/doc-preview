@@ -48,6 +48,11 @@ test('file type detection covers documented representative formats', async () =>
     'clip.swf': 'video',
     'plan.xmind': 'mindmap',
     'mail.eml': 'eml',
+    'pkg.tar': 'archive',
+    'pkg.tar.gz': 'archive',
+    'pkg.tgz': 'archive',
+    'pkg.7z': 'archive',
+    'pkg.rar': 'archive',
   };
 
   for (const [name, expected] of Object.entries(cases)) {
@@ -277,6 +282,97 @@ test('email html sanitizer removes scripts, handlers and dangerous urls', async 
   assert.doesNotMatch(clean, /javascript:/i);
   assert.match(clean, /<a href="https:\/\/example\.com">safe<\/a>/);
   assert.match(clean, /<div>ok<\/div>/);
+});
+
+/** 构造 tar 归档（ustar，仅普通文件与目录） */
+function makeTar(files) {
+  const encoder = new TextEncoder();
+  const writeOctal = (block, offset, length, value) => {
+    block.set(encoder.encode(value.toString(8).padStart(length - 1, '0')), offset);
+    block[offset + length - 1] = 0;
+  };
+
+  const parts = [];
+  for (const file of files) {
+    const nameBytes = encoder.encode(file.name);
+    const data = file.dir ? new Uint8Array(0) : encoder.encode(file.data ?? '');
+    const header = new Uint8Array(512);
+    header.set(nameBytes.subarray(0, 100), 0);
+    writeOctal(header, 100, 8, 0o644);
+    writeOctal(header, 108, 8, 0);
+    writeOctal(header, 116, 8, 0);
+    writeOctal(header, 124, 12, data.length);
+    writeOctal(header, 136, 12, 0);
+    header[156] = file.dir ? 0x35 : 0x30;
+    header.set(encoder.encode('ustar'), 257);
+    header[263] = 0x30;
+    header[264] = 0x30;
+    for (let i = 148; i < 156; i++) header[i] = 0x20;
+    let checksum = 0;
+    for (const byte of header) checksum += byte;
+    header.set(encoder.encode(checksum.toString(8).padStart(6, '0')), 148);
+    header[154] = 0;
+    header[155] = 0x20;
+
+    parts.push(header);
+    if (data.length > 0) {
+      parts.push(data);
+      const padding = (512 - (data.length % 512)) % 512;
+      if (padding > 0) parts.push(new Uint8Array(padding));
+    }
+  }
+  parts.push(new Uint8Array(1024));
+
+  const total = parts.reduce((sum, part) => sum + part.length, 0);
+  const output = new Uint8Array(total);
+  let position = 0;
+  for (const part of parts) {
+    output.set(part, position);
+    position += part.length;
+  }
+  return output;
+}
+
+test('archive reader covers tar, tar.gz and single-file gzip', async () => {
+  const zlib = await import('node:zlib');
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { loadArchive } = await import(coreUrl);
+
+  const tarBytes = makeTar([
+    { name: 'dir/', dir: true },
+    { name: 'dir/inner.txt', data: 'inner' },
+    { name: 'readme.txt', data: 'hello world' },
+  ]);
+
+  const tarHandle = await loadArchive(tarBytes.buffer, 'pkg.tar');
+  assert.equal(tarHandle.format, 'tar');
+  assert.deepEqual(
+    tarHandle.entries.map((entry) => `${entry.isDir ? 'd' : 'f'}:${entry.path}`),
+    ['d:dir/', 'f:dir/inner.txt', 'f:readme.txt'],
+  );
+  assert.equal(await tarHandle.readText('readme.txt'), 'hello world');
+  assert.equal(tarHandle.entries.find((entry) => entry.path === 'dir/inner.txt').dir, 'dir');
+
+  // tar.gz：先 gunzip 再按 tar 解析
+  const tarGz = new Uint8Array(zlib.gzipSync(Buffer.from(tarBytes)));
+  const tarGzHandle = await loadArchive(tarGz.buffer, 'pkg.tar.gz');
+  assert.equal(tarGzHandle.entries.length, 3);
+  assert.equal(await tarGzHandle.readText('dir/inner.txt'), 'inner');
+
+  // 单文件 gzip：以去掉 .gz 的文件名作为唯一条目
+  const soloGz = new Uint8Array(zlib.gzipSync(Buffer.from('plain text')));
+  const soloHandle = await loadArchive(soloGz.buffer, 'note.txt.gz');
+  assert.equal(soloHandle.entries.length, 1);
+  assert.equal(soloHandle.entries[0].name, 'note.txt');
+  assert.equal(await soloHandle.readText('note.txt'), 'plain text');
+});
+
+test('archive reader rejects 7z/rar with an explicit message', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { loadArchive } = await import(coreUrl);
+
+  await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.7z'), /WASM/);
+  await assert.rejects(() => loadArchive(new Uint8Array(32).buffer, 'pkg.rar'), /WASM/);
 });
 
 test('request factory merges headers and delegates to the handler', async () => {

@@ -58,6 +58,11 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   txt: 'text/plain',
   zip: 'application/zip',
   jar: 'application/java-archive',
+  tar: 'application/x-tar',
+  tgz: 'application/gzip',
+  gz: 'application/gzip',
+  '7z': 'application/x-7z-compressed',
+  rar: 'application/vnd.rar',
   xmind: 'application/x-xmind',
   eml: 'message/rfc822',
 
