@@ -22,6 +22,7 @@ import type { TextRenderer as TextRendererImpl } from './Text';
 import type { FontRenderer as FontRendererImpl } from './Font';
 import type { CadRenderer as CadRendererImpl } from './Cad';
 import type { MindmapRenderer as MindmapRendererImpl } from './Mindmap';
+import type { EmlRenderer as EmlRendererImpl } from './Eml';
 
 type Lazy<T> = LazyExoticComponent<T extends ComponentType<infer P> ? ComponentType<P> : never>;
 
@@ -103,4 +104,8 @@ export const CadRenderer: Lazy<typeof CadRendererImpl> = lazy(() =>
 
 export const MindmapRenderer: Lazy<typeof MindmapRendererImpl> = lazy(() =>
   import('./Mindmap').then((m) => ({ default: m.MindmapRenderer })),
+);
+
+export const EmlRenderer: Lazy<typeof EmlRendererImpl> = lazy(() =>
+  import('./Eml').then((m) => ({ default: m.EmlRenderer })),
 );

@@ -59,6 +59,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   zip: 'application/zip',
   jar: 'application/java-archive',
   xmind: 'application/x-xmind',
+  eml: 'message/rfc822',
 
   // 字体
   ttf: 'font/ttf',

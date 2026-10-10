@@ -72,6 +72,9 @@ export function getFileType(file: PreviewFile): FileType {
   if (ext === 'xmind' || mimeType === 'application/x-xmind') {
     return 'mindmap';
   }
+  if (ext === 'eml' || mimeType === 'message/rfc822') {
+    return 'eml';
+  }
   if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||

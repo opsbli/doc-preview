@@ -21,6 +21,7 @@ import {
   FontRenderer,
   CadRenderer,
   MindmapRenderer,
+  EmlRenderer,
 } from './lazy';
 
 /**
@@ -210,6 +211,13 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
   {
     fileType: 'mindmap',
     component: MindmapRenderer,
+    getProps: (ctx) => ({
+      url: ctx.resolvedUrl,
+    }),
+  },
+  {
+    fileType: 'eml',
+    component: EmlRenderer,
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
     }),

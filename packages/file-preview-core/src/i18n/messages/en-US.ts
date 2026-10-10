@@ -142,6 +142,13 @@ export const enUS: Messages = {
   'mindmap.notes': 'Notes',
   'mindmap.labels': 'Labels',
   'mindmap.untitled': 'Untitled topic',
+
+  // ─────── eml ───────
+  'eml.loading': 'Loading email...',
+  'eml.load_failed': 'Failed to load email',
+  'eml.parse_failed': 'Failed to parse EML email',
+  'eml.no_subject': '(No subject)',
+  'eml.empty_body': '(Empty body)',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

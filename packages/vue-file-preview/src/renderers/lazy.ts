@@ -32,3 +32,4 @@ export const TextRenderer = wrap(() => import('./Text/index.vue'));
 export const FontRenderer = wrap(() => import('./Font/index.vue'));
 export const CadRenderer = wrap(() => import('./Cad/index.vue'));
 export const MindmapRenderer = wrap(() => import('./Mindmap/index.vue'));
+export const EmlRenderer = wrap(() => import('./Eml/index.vue'));

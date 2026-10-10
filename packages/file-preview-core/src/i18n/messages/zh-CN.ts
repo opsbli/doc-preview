@@ -142,6 +142,13 @@ export const zhCN: Messages = {
   'mindmap.notes': '备注',
   'mindmap.labels': '标签',
   'mindmap.untitled': '未命名主题',
+
+  // ─────── eml ───────
+  'eml.loading': '加载邮件中...',
+  'eml.load_failed': '邮件加载失败',
+  'eml.parse_failed': 'EML 邮件解析失败',
+  'eml.no_subject': '（无主题）',
+  'eml.empty_body': '（正文为空）',
   'mindmap.topics': '{count} 个主题',
 
   // ─────── text ───────

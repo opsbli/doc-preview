@@ -38,6 +38,7 @@ export type FileType =
   | 'subtitle'
   | 'zip'
   | 'mindmap'
+  | 'eml'
   | 'text'
   | 'font'
   | 'cad'
@@ -64,6 +65,7 @@ export const SUPPORTED_FILE_TYPES: Exclude<FileType, 'unsupported'>[] = [
   'subtitle',
   'zip',
   'mindmap',
+  'eml',
   'text',
   'font',
   'cad',

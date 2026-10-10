@@ -92,6 +92,13 @@ export { isOleCompoundDocument } from './utils/binaryFormat';
 export { decodeTgaImage } from './utils/tgaDecoder';
 export type { DecodedTgaImage } from './utils/tgaDecoder';
 
+// 导出不受信任 HTML 清洗（邮件正文预览用）
+export { sanitizeEmailHtml } from './utils/htmlSanitize';
+
+// 导出 EML 邮件解析
+export { parseEml } from './utils/emlParser';
+export type { ParsedEml, EmailAddress, EmailAttachment } from './utils/emlParser';
+
 // 导出 XMind 思维导图解析
 export { parseXmind, countMindmapNodes } from './utils/xmindParser';
 export type { MindmapNode, MindmapSheet, ParsedXmind } from './utils/xmindParser';

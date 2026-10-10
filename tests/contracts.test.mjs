@@ -47,6 +47,7 @@ test('file type detection covers documented representative formats', async () =>
     'clip.mpeg': 'video',
     'clip.swf': 'video',
     'plan.xmind': 'mindmap',
+    'mail.eml': 'eml',
   };
 
   for (const [name, expected] of Object.entries(cases)) {
@@ -215,6 +216,67 @@ test('xmind parser reads content.json topic tree from the zip container', async 
     () => parseXmind(makeZip([{ name: 'metadata.json', content: '{}' }])),
     /content\.json/,
   );
+});
+
+test('eml parser normalizes headers, body and attachments', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { parseEml } = await import(coreUrl);
+
+  const raw = [
+    'From: Alice <alice@example.com>',
+    'To: Bob <bob@example.com>',
+    'Subject: Hello',
+    'Date: Sat, 10 Oct 2026 10:00:00 +0800',
+    'Message-ID: <abc@example.com>',
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/mixed; boundary="BOUND"',
+    '',
+    '--BOUND',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    '<p>Hi</p><script>alert(1)</script>',
+    '--BOUND',
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Disposition: attachment; filename="a.txt"',
+    '',
+    'hello file',
+    '--BOUND--',
+    '',
+  ].join('\r\n');
+
+  const parsed = await parseEml(raw);
+  assert.equal(parsed.subject, 'Hello');
+  assert.deepEqual(parsed.from, [{ name: 'Alice', address: 'alice@example.com' }]);
+  assert.equal(parsed.to[0].address, 'bob@example.com');
+  assert.equal(parsed.messageId, '<abc@example.com>');
+  assert.match(parsed.html ?? '', /<p>Hi<\/p>/);
+  assert.doesNotMatch(parsed.html ?? '', /<script/i);
+  assert.equal(parsed.attachments.length, 1);
+  assert.equal(parsed.attachments[0].filename, 'a.txt');
+  assert.equal(parsed.attachments[0].size, 10);
+});
+
+test('email html sanitizer removes scripts, handlers and dangerous urls', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { sanitizeEmailHtml } = await import(coreUrl);
+
+  const dirty = [
+    '<div onclick="steal()">ok</div>',
+    '<img src="x.png" onerror="steal()">',
+    '<a href="javascript:steal()">link</a>',
+    '<a href="https://example.com">safe</a>',
+    '<iframe src="https://evil.test"></iframe>',
+    '<script>steal()</script>',
+  ].join('');
+
+  const clean = sanitizeEmailHtml(dirty);
+  assert.doesNotMatch(clean, /<script/i);
+  assert.doesNotMatch(clean, /<iframe/i);
+  assert.doesNotMatch(clean, /onerror/i);
+  assert.doesNotMatch(clean, /onclick/i);
+  assert.doesNotMatch(clean, /javascript:/i);
+  assert.match(clean, /<a href="https:\/\/example\.com">safe<\/a>/);
+  assert.match(clean, /<div>ok<\/div>/);
 });
 
 test('request factory merges headers and delegates to the handler', async () => {
