@@ -32,6 +32,7 @@ export type FileType =
   | 'video'
   | 'audio'
   | 'markdown'
+  | 'html'
   | 'json'
   | 'csv'
   | 'xml'
@@ -61,6 +62,7 @@ export const SUPPORTED_FILE_TYPES: Exclude<FileType, 'unsupported'>[] = [
   'video',
   'audio',
   'markdown',
+  'html',
   'json',
   'csv',
   'xml',

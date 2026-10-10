@@ -134,6 +134,15 @@ export function getFileType(file: PreviewFile): FileType {
   if (ext === 'md' || ext === 'markdown') {
     return 'markdown';
   }
+  if (
+    ext === 'html' ||
+    ext === 'htm' ||
+    ext === 'xhtml' ||
+    mimeType === 'text/html' ||
+    mimeType === 'application/xhtml+xml'
+  ) {
+    return 'html';
+  }
   if (mimeType === 'application/json' || ext === 'json' || ext === 'jsonc') {
     return 'json';
   }

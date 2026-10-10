@@ -96,8 +96,8 @@ export { isOleCompoundDocument } from './utils/binaryFormat';
 export { decodeTgaImage } from './utils/tgaDecoder';
 export type { DecodedTgaImage } from './utils/tgaDecoder';
 
-// 导出不受信任 HTML 清洗（邮件正文预览用）
-export { sanitizeEmailHtml } from './utils/htmlSanitize';
+// 导出不受信任 HTML 清洗（邮件正文预览用）与 HTML 预预览预处理
+export { sanitizeEmailHtml, prepareHtmlForSandbox } from './utils/htmlSanitize';
 
 // 导出 EML 邮件解析
 export { parseEml } from './utils/emlParser';

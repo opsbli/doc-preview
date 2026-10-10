@@ -293,6 +293,26 @@ test('email html sanitizer removes scripts, handlers and dangerous urls', async 
   assert.match(clean, /<div>ok<\/div>/);
 });
 
+test('html preview preprocessing strips base and meta refresh', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { prepareHtmlForSandbox } = await import(coreUrl);
+
+  const dirty = [
+    '<base href="https://evil.test/">',
+    '<meta http-equiv="refresh" content="0;url=https://evil.test">',
+    '<meta charset="utf-8">',
+    '<style>body{color:red}</style>',
+    '<p>keep me</p>',
+  ].join('');
+
+  const prepared = prepareHtmlForSandbox(dirty);
+  assert.doesNotMatch(prepared, /<base/i);
+  assert.doesNotMatch(prepared, /http-equiv/i);
+  assert.match(prepared, /<meta charset="utf-8">/);
+  assert.match(prepared, /<style>body\{color:red\}<\/style>/);
+  assert.match(prepared, /<p>keep me<\/p>/);
+});
+
 /** 构造 tar 归档（ustar，仅普通文件与目录） */
 function makeTar(files) {
   const encoder = new TextEncoder();

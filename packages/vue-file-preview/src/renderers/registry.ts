@@ -24,6 +24,7 @@ import {
   EmlRenderer,
   ArchiveRenderer,
   BpmnRenderer,
+  HtmlRenderer,
 } from './lazy';
 
 /**
@@ -236,6 +237,13 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
   {
     fileType: 'bpmn',
     component: BpmnRenderer,
+    getProps: (ctx) => ({
+      url: ctx.resolvedUrl,
+    }),
+  },
+  {
+    fileType: 'html',
+    component: HtmlRenderer,
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
     }),

@@ -267,6 +267,19 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - 任务列表
 - 自动链接
 
+## HTML 文档
+
+- **HTML** - `.html`, `.htm`, `.xhtml`
+
+### 特性
+
+- **预览模式（默认）**：以 `<iframe sandbox="">` 通过 `srcDoc` 承载文档（静态安全预览）
+  - 不带 `allow-scripts`：页面内脚本**一律不执行**
+  - 不带 `allow-same-origin`：与宿主页面不同源，无法访问宿主 cookie / storage
+  - 预览前会移除 `<base>` 与 `<meta http-equiv="refresh">`（避免改写基准路径与自动跳转）
+  - 代价：依赖脚本才能渲染的页面不会完整还原
+- **源码模式**：工具栏可切换，显示带高亮的源码
+
 ## 代码文件
 
 支持 40+ 种编程语言的语法高亮：
@@ -454,6 +467,7 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - `video` - 视频文件
 - `audio` - 音频文件
 - `markdown` - Markdown 文件
+- `html` - HTML 文档（沙箱预览 / 源码）
 - `json` - JSON / JSONC 文件
 - `csv` - CSV/TSV 文件
 - `xml` - XML 文件

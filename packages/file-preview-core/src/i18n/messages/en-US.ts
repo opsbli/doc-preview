@@ -100,6 +100,10 @@ export const enUS: Messages = {
   'markdown.copy_code': 'Copy code',
   'markdown.copied': 'Copied',
 
+  // ─────── html ───────
+  'html.load_failed': 'Failed to load HTML file',
+  'html.preview_frame_title': 'HTML preview (scripts disabled)',
+
   // ─────── json ───────
   'json.load_failed': 'Failed to load JSON',
   'json.items': 'items',

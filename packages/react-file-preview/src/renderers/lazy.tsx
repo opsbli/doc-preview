@@ -25,6 +25,7 @@ import type { MindmapRenderer as MindmapRendererImpl } from './Mindmap';
 import type { EmlRenderer as EmlRendererImpl } from './Eml';
 import type { ArchiveRenderer as ArchiveRendererImpl } from './Archive';
 import type { BpmnRenderer as BpmnRendererImpl } from './Bpmn';
+import type { HtmlRenderer as HtmlRendererImpl } from './Html';
 
 type Lazy<T> = LazyExoticComponent<T extends ComponentType<infer P> ? ComponentType<P> : never>;
 
@@ -118,4 +119,8 @@ export const ArchiveRenderer: Lazy<typeof ArchiveRendererImpl> = lazy(() =>
 
 export const BpmnRenderer: Lazy<typeof BpmnRendererImpl> = lazy(() =>
   import('./Bpmn').then((m) => ({ default: m.BpmnRenderer })),
+);
+
+export const HtmlRenderer: Lazy<typeof HtmlRendererImpl> = lazy(() =>
+  import('./Html').then((m) => ({ default: m.HtmlRenderer })),
 );

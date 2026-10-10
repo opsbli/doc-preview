@@ -61,3 +61,17 @@ export function sanitizeEmailHtml(html: string): string {
   result = stripDangerousUrls(result);
   return result;
 }
+
+/**
+ * HTML 预览（sandbox iframe）前的轻量预处理
+ *
+ * 预览以 `<iframe sandbox="">` 承载，脚本与同源访问已由 sandbox 阻断。
+ * 此处只额外去掉两类会让预览“自己跑掉”的元素，保持其余内容原样以保留页面保真度：
+ * - `<base>`：会改写页内相对路径的基准
+ * - `<meta http-equiv="refresh">`：会触发自动跳转（可能把 iframe 导到远程页面）
+ */
+export function prepareHtmlForSandbox(html: string): string {
+  return html
+    .replace(/<base\b[^>]*>/gi, '')
+    .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?refresh["']?[^>]*>/gi, '');
+}

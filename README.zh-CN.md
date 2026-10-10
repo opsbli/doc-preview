@@ -153,7 +153,7 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>其他</strong></td>
-  <td>Markdown, CSV, JSON, XML, ZIP/JAR/TAR/GZ/7Z/RAR, MSG/EML, EPUB/MOBI, XMind, BPMN, 字体</td>
+  <td>Markdown, HTML（沙箱预览）, CSV, JSON, XML, ZIP/JAR/TAR/GZ/7Z/RAR, MSG/EML, EPUB/MOBI, XMind, BPMN, 字体</td>
   <td>渲染、格式化、树形视图、思维导图折叠、流程渲染、字符集预览</td>
 </tr>
 </table>

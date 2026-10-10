@@ -100,6 +100,10 @@ export const zhCN: Messages = {
   'markdown.copy_code': '复制代码',
   'markdown.copied': '已复制',
 
+  // ─────── html ───────
+  'html.load_failed': 'HTML 文件加载失败',
+  'html.preview_frame_title': 'HTML 预览（脚本已禁用）',
+
   // ─────── json ───────
   'json.load_failed': 'JSON 文件加载失败',
   'json.items': 'items',
