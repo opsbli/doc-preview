@@ -111,6 +111,9 @@ importers:
       '@zip.js/zip.js':
         specifier: ^2.8.45
         version: 2.8.45
+      dicom-parser:
+        specifier: ^1.8.21
+        version: 1.8.21
       fflate:
         specifier: ^0.8.3
         version: 0.8.3
@@ -160,6 +163,9 @@ importers:
       '@likecoin/epub-ts':
         specifier: ^0.6.0
         version: 0.6.2
+      '@maxgraph/core':
+        specifier: ^0.24.0
+        version: 0.24.0
       '@zip.js/zip.js':
         specifier: ^2.8.45
         version: 2.8.45
@@ -226,6 +232,9 @@ importers:
       remark-math:
         specifier: ^6.0.0
         version: 6.0.0
+      rtf.js:
+        specifier: ^3.0.9
+        version: 3.0.9
       shiki:
         specifier: ^1.29.2
         version: 1.29.2
@@ -351,6 +360,9 @@ importers:
       '@likecoin/epub-ts':
         specifier: ^0.6.0
         version: 0.6.2
+      '@maxgraph/core':
+        specifier: ^0.24.0
+        version: 0.24.0
       '@traptitech/markdown-it-katex':
         specifier: ^3.6.0
         version: 3.6.0
@@ -402,6 +414,9 @@ importers:
       pptx-preview:
         specifier: ^1.0.7
         version: 1.0.7
+      rtf.js:
+        specifier: ^3.0.9
+        version: 3.0.9
       shiki:
         specifier: ^1.24.0
         version: 1.29.2
@@ -914,6 +929,9 @@ packages:
     peerDependenciesMeta:
       linkedom:
         optional: true
+
+  '@maxgraph/core@0.24.0':
+    resolution: {integrity: sha512-OgzCL86pTEa/8MpxbIX44S+xk0qAfmlAu0yZhQ9RFaEB8E5M2rJlPHNWeFpsD/ybWb5J5oPmZYszIcvzG/Kg4g==}
 
   '@napi-rs/canvas-android-arm64@1.0.1':
     resolution: {integrity: sha512-d7ZCwJsgH4QNG50C7HQeVRsRG1gRDa1UeDUb1jEcqgLuiEJp6GVbGiZkFXPlmt0dEs2QHRQCPJoOv+bOkSQR/w==}
@@ -1833,6 +1851,9 @@ packages:
 
   diagram-js@15.28.1:
     resolution: {integrity: sha512-R90PKnpRL9prdiYxc9ndtqkxnn1dIZacWgq0cpz4ABse1AwhrXexD8sRUZkNdxj9Adz4k04DUee/J6l/uTVDfw==}
+
+  dicom-parser@1.8.21:
+    resolution: {integrity: sha512-lYCweHQDsC8UFpXErPlg86Px2A8bay0HiUY+wzoG3xv5GzgqVHU3lziwSc/Gzn7VV7y2KeP072SzCviuOoU02w==}
 
   didi@11.0.1:
     resolution: {integrity: sha512-eEBvv5SHBhoCyDX/kOR8UozNfqEkjEXjNCTsE2vWWoxoJ5QC8KXYRTE78mrpdpvXNtSEriLhbgQdD0OkHvLFWQ==}
@@ -3134,6 +3155,9 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  rtf.js@3.0.9:
+    resolution: {integrity: sha512-I1GpDat4i548WzmeZXv27f/743984fvEeeBS8BC01/Sop17pMlUl3M7DYcdcB3PUvOZTrFIMxGZx8qw7cSMAKQ==}
+
   run-async@2.4.1:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
     engines: {node: '>=0.12.0'}
@@ -4049,6 +4073,8 @@ snapshots:
   '@likecoin/epub-ts@0.6.2':
     dependencies:
       jszip: 3.10.1
+
+  '@maxgraph/core@0.24.0': {}
 
   '@napi-rs/canvas-android-arm64@1.0.1':
     optional: true
@@ -5007,6 +5033,8 @@ snapshots:
       tiny-svg: 4.1.4
     transitivePeerDependencies:
       - preact-render-to-string
+
+  dicom-parser@1.8.21: {}
 
   didi@11.0.1: {}
 
@@ -6636,6 +6664,10 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.60.1
       '@rollup/rollup-win32-x64-msvc': 4.60.1
       fsevents: 2.3.3
+
+  rtf.js@3.0.9:
+    dependencies:
+      codepage: 1.15.0
 
   run-async@2.4.1: {}
 
