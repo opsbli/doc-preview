@@ -171,6 +171,10 @@ export const enUS: Messages = {
   'drawio.loading': 'Loading diagram...',
   'drawio.load_failed': 'Failed to load diagram',
   'drawio.parse_failed': 'Failed to parse drawio file',
+
+  // ─────── rtf ───────
+  'rtf.load_failed': 'Failed to load RTF file',
+  'rtf.parse_failed': 'Failed to parse RTF document',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

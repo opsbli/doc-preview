@@ -48,6 +48,7 @@ test('file type detection covers documented representative formats', async () =>
     'legacy.htm': 'html',
     'flow.drawio': 'drawio',
     'old.dio': 'drawio',
+    'note.rtf': 'rtf',
     'config.toml': 'text',
     'run.bat': 'text',
     'photo.tga': 'image',

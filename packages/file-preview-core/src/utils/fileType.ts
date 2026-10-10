@@ -99,6 +99,9 @@ export function getFileType(file: PreviewFile): FileType {
   ) {
     return 'drawio';
   }
+  if (ext === 'rtf' || mimeType === 'application/rtf' || mimeType === 'text/rtf') {
+    return 'rtf';
+  }
   if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||

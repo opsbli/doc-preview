@@ -133,7 +133,7 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>Documents</strong></td>
-  <td>PDF, DOCX, XLSX/XLSM/XLS, PPTX/PPT</td>
+  <td>PDF, DOCX, XLSX/XLSM/XLS, PPTX/PPT, RTF</td>
   <td>Pagination, zoom, slide preview, spreadsheet view</td>
 </tr>
 <tr>

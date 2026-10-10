@@ -439,6 +439,20 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 本库按**扩展名**识别格式，`.xml` 会交给 XML 渲染器（源码高亮），不会按流程图渲染。
 若要以流程图预览，请在 drawio 中保存为 `.drawio`。
 
+## RTF 文档
+
+- **RTF** - `.rtf`
+
+### 特性
+
+- 基于 rtf.js 在浏览器内渲染（含文档内嵌的 WMF / EMF 图片）
+- 不依赖任何服务端转换
+
+### 局限
+
+rtf.js 对复杂排版（嵌套表格、域代码、部分字体映射）还原不完整；
+对格式要求高的场景建议先转换为 PDF / DOCX 预览。
+
 ## 不支持的格式
 
 对于不支持的文件格式，组件会显示一个友好的提示界面，包含：
@@ -494,6 +508,7 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - `mindmap` - XMind 思维导图
 - `bpmn` - BPMN 2.0 流程图
 - `drawio` - drawio / mxGraph 流程图
+- `rtf` - RTF 文档
 - `eml` - RFC 822 / MIME 邮件
 - `text` - 其他文本和代码文件
 - `font` - 字体文件（TTF / OTF / WOFF / WOFF2）

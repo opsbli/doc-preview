@@ -73,6 +73,12 @@ export default defineConfig(({ mode }) => {
     'three',
     /^three(\/.*)?$/,
     'three-dxf-loader',
+    // 流程图 / 图编辑 / RTF（体积较大，保持 external 由使用方 bundler 解析）
+    'bpmn-js',
+    /^bpmn-js(\/.*)?$/,
+    '@maxgraph/core',
+    /^@maxgraph\/core(\/.*)?$/,
+    'rtf.js',
     // 高级图片格式解码库（动态 import，按需加载）
     'heic2any',
     '@jsquash/avif',

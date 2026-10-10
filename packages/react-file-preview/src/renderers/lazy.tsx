@@ -27,6 +27,7 @@ import type { ArchiveRenderer as ArchiveRendererImpl } from './Archive';
 import type { BpmnRenderer as BpmnRendererImpl } from './Bpmn';
 import type { HtmlRenderer as HtmlRendererImpl } from './Html';
 import type { DrawioRenderer as DrawioRendererImpl } from './Drawio';
+import type { RtfRenderer as RtfRendererImpl } from './Rtf';
 
 type Lazy<T> = LazyExoticComponent<T extends ComponentType<infer P> ? ComponentType<P> : never>;
 
@@ -128,4 +129,8 @@ export const HtmlRenderer: Lazy<typeof HtmlRendererImpl> = lazy(() =>
 
 export const DrawioRenderer: Lazy<typeof DrawioRendererImpl> = lazy(() =>
   import('./Drawio').then((m) => ({ default: m.DrawioRenderer })),
+);
+
+export const RtfRenderer: Lazy<typeof RtfRendererImpl> = lazy(() =>
+  import('./Rtf').then((m) => ({ default: m.RtfRenderer })),
 );

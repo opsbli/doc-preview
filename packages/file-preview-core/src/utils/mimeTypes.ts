@@ -73,6 +73,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   bpmn: 'application/bpmn+xml',
   drawio: 'application/vnd.jgraph.mxfile',
   dio: 'application/vnd.jgraph.mxfile',
+  rtf: 'application/rtf',
 
   // 字体
   ttf: 'font/ttf',

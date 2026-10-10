@@ -171,6 +171,10 @@ export const zhCN: Messages = {
   'drawio.loading': '加载流程图...',
   'drawio.load_failed': '流程图加载失败',
   'drawio.parse_failed': 'drawio 文件解析失败',
+
+  // ─────── rtf ───────
+  'rtf.load_failed': 'RTF 文件加载失败',
+  'rtf.parse_failed': 'RTF 文件解析失败',
   'mindmap.topics': '{count} 个主题',
 
   // ─────── text ───────
