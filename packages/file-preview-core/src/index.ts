@@ -92,6 +92,10 @@ export { isOleCompoundDocument } from './utils/binaryFormat';
 export { decodeTgaImage } from './utils/tgaDecoder';
 export type { DecodedTgaImage } from './utils/tgaDecoder';
 
+// 导出 XMind 思维导图解析
+export { parseXmind, countMindmapNodes } from './utils/xmindParser';
+export type { MindmapNode, MindmapSheet, ParsedXmind } from './utils/xmindParser';
+
 // 导出 PDF.js Worker 配置
 export { configurePdfWorker, getPdfDocumentOptions } from './utils/pdfWorker';
 export type { PdfWorkerOptions, PdfDocumentOptions } from './utils/pdfWorker';

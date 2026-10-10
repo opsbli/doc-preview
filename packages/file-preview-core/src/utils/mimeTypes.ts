@@ -58,6 +58,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   txt: 'text/plain',
   zip: 'application/zip',
   jar: 'application/java-archive',
+  xmind: 'application/x-xmind',
 
   // 字体
   ttf: 'font/ttf',

@@ -132,6 +132,18 @@ export const zhCN: Messages = {
   'zip.load_failed': 'ZIP 文件加载失败',
   'zip.parse_failed': 'ZIP 解析失败',
 
+  // ─────── mindmap ───────
+  'mindmap.loading': '加载思维导图中...',
+  'mindmap.load_failed': '思维导图加载失败',
+  'mindmap.parse_failed': 'XMind 文件解析失败',
+  'mindmap.empty': '思维导图中没有可显示的主题',
+  'mindmap.expand_all': '全部展开',
+  'mindmap.collapse_all': '全部折叠',
+  'mindmap.notes': '备注',
+  'mindmap.labels': '标签',
+  'mindmap.untitled': '未命名主题',
+  'mindmap.topics': '{count} 个主题',
+
   // ─────── text ───────
   'text.load_failed': '文本文件加载失败',
 

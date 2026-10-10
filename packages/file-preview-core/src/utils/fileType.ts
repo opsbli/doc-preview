@@ -69,6 +69,9 @@ export function getFileType(file: PreviewFile): FileType {
   ) {
     return 'zip';
   }
+  if (ext === 'xmind' || mimeType === 'application/x-xmind') {
+    return 'mindmap';
+  }
   if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||

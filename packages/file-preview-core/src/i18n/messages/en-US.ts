@@ -132,6 +132,18 @@ export const enUS: Messages = {
   'zip.load_failed': 'Failed to load ZIP',
   'zip.parse_failed': 'Failed to parse ZIP',
 
+  // ─────── mindmap ───────
+  'mindmap.loading': 'Loading mind map...',
+  'mindmap.load_failed': 'Failed to load mind map',
+  'mindmap.parse_failed': 'Failed to parse XMind file',
+  'mindmap.empty': 'No topics to display in this mind map',
+  'mindmap.expand_all': 'Expand all',
+  'mindmap.collapse_all': 'Collapse all',
+  'mindmap.notes': 'Notes',
+  'mindmap.labels': 'Labels',
+  'mindmap.untitled': 'Untitled topic',
+  'mindmap.topics': '{count} topics',
+
   // ─────── text ───────
   'text.load_failed': 'Failed to load text file',
 
