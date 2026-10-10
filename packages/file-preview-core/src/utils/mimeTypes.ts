@@ -71,6 +71,8 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   xmind: 'application/x-xmind',
   eml: 'message/rfc822',
   bpmn: 'application/bpmn+xml',
+  drawio: 'application/vnd.jgraph.mxfile',
+  dio: 'application/vnd.jgraph.mxfile',
 
   // 字体
   ttf: 'font/ttf',

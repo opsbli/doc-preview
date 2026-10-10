@@ -422,6 +422,23 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - 导入后自动适配画布尺寸
 - 需要文件包含 BPMN DI（图形信息）才能渲染图形
 
+## drawio 流程图
+
+- **drawio** - `.drawio`, `.dio`
+
+### 特性
+
+- 基于 `@maxgraph/core`（mxGraph 的官方继任者）只读渲染 mxGraphModel
+- 兼容两种存放方式：未压缩的 `<mxGraphModel>`，与 drawio 默认的压缩形式
+  （`URL-encode(base64(raw deflate(xml)))`，同时兼容未 URL-encode 的 base64）
+- 多页（diagram）时提供页签切换，并提供「适应窗口」
+- 只读查看：编辑与选择已关闭
+
+### 重要说明：另存为 `.xml` 的 drawio 文件
+
+本库按**扩展名**识别格式，`.xml` 会交给 XML 渲染器（源码高亮），不会按流程图渲染。
+若要以流程图预览，请在 drawio 中保存为 `.drawio`。
+
 ## 不支持的格式
 
 对于不支持的文件格式，组件会显示一个友好的提示界面，包含：
@@ -476,6 +493,7 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - `archive` - TAR / TAR.GZ / TGZ / GZ / 7Z / RAR 压缩包
 - `mindmap` - XMind 思维导图
 - `bpmn` - BPMN 2.0 流程图
+- `drawio` - drawio / mxGraph 流程图
 - `eml` - RFC 822 / MIME 邮件
 - `text` - 其他文本和代码文件
 - `font` - 字体文件（TTF / OTF / WOFF / WOFF2）

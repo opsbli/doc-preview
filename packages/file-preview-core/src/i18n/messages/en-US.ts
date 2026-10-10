@@ -166,6 +166,11 @@ export const enUS: Messages = {
   'bpmn.loading': 'Loading BPMN diagram...',
   'bpmn.load_failed': 'Failed to load BPMN diagram',
   'bpmn.parse_failed': 'Failed to parse BPMN definition',
+
+  // ─────── drawio ───────
+  'drawio.loading': 'Loading diagram...',
+  'drawio.load_failed': 'Failed to load diagram',
+  'drawio.parse_failed': 'Failed to parse drawio file',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

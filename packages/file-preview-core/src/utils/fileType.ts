@@ -92,6 +92,14 @@ export function getFileType(file: PreviewFile): FileType {
     return 'bpmn';
   }
   if (
+    ext === 'drawio' ||
+    ext === 'dio' ||
+    mimeType === 'application/vnd.jgraph.mxfile' ||
+    mimeType === 'application/x-drawio'
+  ) {
+    return 'drawio';
+  }
+  if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||
     mimeType === 'application/font-woff' ||

@@ -103,6 +103,10 @@ export { sanitizeEmailHtml, prepareHtmlForSandbox } from './utils/htmlSanitize';
 export { parseEml } from './utils/emlParser';
 export type { ParsedEml, EmailAddress, EmailAttachment } from './utils/emlParser';
 
+// 导出 drawio / mxGraph 解析
+export { parseDrawio, decodeDrawioPayload } from './utils/drawioParser';
+export type { DrawioDiagram, ParsedDrawio } from './utils/drawioParser';
+
 // 导出通用压缩包读取（tar / gzip / 7z / rar）
 export { loadArchive, detectArchiveFormat } from './utils/archiveReader';
 export type { ArchiveFormat, ArchiveHandle } from './utils/archiveReader';

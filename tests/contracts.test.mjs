@@ -44,6 +44,10 @@ test('file type detection covers documented representative formats', async () =>
     'scene.wrl': 'cad',
     'part.3mf': 'cad',
     'part.amf': 'cad',
+    'page.html': 'html',
+    'legacy.htm': 'html',
+    'flow.drawio': 'drawio',
+    'old.dio': 'drawio',
     'config.toml': 'text',
     'run.bat': 'text',
     'photo.tga': 'image',
@@ -311,6 +315,46 @@ test('html preview preprocessing strips base and meta refresh', async () => {
   assert.match(prepared, /<meta charset="utf-8">/);
   assert.match(prepared, /<style>body\{color:red\}<\/style>/);
   assert.match(prepared, /<p>keep me<\/p>/);
+});
+
+test('drawio parser handles uncompressed and compressed diagrams', async () => {
+  const zlib = await import('node:zlib');
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { parseDrawio } = await import(coreUrl);
+
+  const modelXml =
+    '<mxGraphModel dx="800" dy="600"><root><mxCell id="0"/><mxCell id="1" parent="0"/>' +
+    '<mxCell id="2" value="Hello" style="rounded=0;" vertex="1" parent="1">' +
+    '<mxGeometry x="40" y="40" width="120" height="60" as="geometry"/></mxCell></root></mxGraphModel>';
+
+  // 未压缩：diagram 内直接是 mxGraphModel
+  const plain = `<mxfile host="app.diagrams.net"><diagram id="p1" name="Page-1">${modelXml}</diagram></mxfile>`;
+  const parsedPlain = await parseDrawio(plain);
+  assert.equal(parsedPlain.diagrams.length, 1);
+  assert.equal(parsedPlain.diagrams[0].name, 'Page-1');
+  assert.match(parsedPlain.diagrams[0].xml, /value="Hello"/);
+
+  // 压缩（drawio 默认）：URL-encode(base64(raw deflate(xml)))
+  const compressed = encodeURIComponent(zlib.deflateRawSync(Buffer.from(modelXml, 'utf8')).toString('base64'));
+  const packed = `<mxfile host="app.diagrams.net"><diagram id="p2" name="Page 2">${compressed}</diagram></mxfile>`;
+  const parsedPacked = await parseDrawio(packed);
+  assert.equal(parsedPacked.diagrams[0].name, 'Page 2');
+  assert.equal(parsedPacked.diagrams[0].xml, modelXml);
+
+  // 未 URL-encode 的 base64(deflate) 也要能解
+  const plainBase64 = zlib.deflateRawSync(Buffer.from(modelXml, 'utf8')).toString('base64');
+  const noUrlEncode = `<mxfile><diagram name="Raw">${plainBase64}</diagram></mxfile>`;
+  assert.equal((await parseDrawio(noUrlEncode)).diagrams[0].xml, modelXml);
+
+  // 裸 mxGraphModel
+  assert.equal((await parseDrawio(modelXml)).diagrams.length, 1);
+
+  // 多页
+  const multi = `<mxfile><diagram name="A">${modelXml}</diagram><diagram name="B">${modelXml}</diagram></mxfile>`;
+  assert.deepEqual((await parseDrawio(multi)).diagrams.map((item) => item.name), ['A', 'B']);
+
+  // 无效内容
+  await assert.rejects(() => parseDrawio('<html></html>'), /drawio/);
 });
 
 /** 构造 tar 归档（ustar，仅普通文件与目录） */
