@@ -24,7 +24,9 @@ interface ErrorState {
 }
 
 // 浏览器原生不支持的视频容器（无论编码，<video> 都无法播放）
-const BROWSER_UNSUPPORTED_EXTS = new Set(['avi', 'wmv', 'flv']);
+const BROWSER_UNSUPPORTED_EXTS = new Set([
+  'avi', 'wmv', 'flv', 'asf', 'rm', 'rmvb', 'mpeg', 'mpg', 'swf',
+]);
 
 const error = ref<ErrorState | null>(null);
 const isLoading = ref(true);

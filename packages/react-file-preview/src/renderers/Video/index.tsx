@@ -14,7 +14,9 @@ interface VideoRendererProps {
 
 // 浏览器原生不支持的视频容器（无论编码，<video> 都无法播放）
 // — 这些扩展名直接短路 videojs 初始化，给出明确提示
-const BROWSER_UNSUPPORTED_EXTS = new Set(['avi', 'wmv', 'flv']);
+const BROWSER_UNSUPPORTED_EXTS = new Set([
+  'avi', 'wmv', 'flv', 'asf', 'rm', 'rmvb', 'mpeg', 'mpg', 'swf',
+]);
 
 // 根据 URL 获取视频 MIME 类型
 const getVideoType = (url: string): string => {

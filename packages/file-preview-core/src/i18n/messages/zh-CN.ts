@@ -61,6 +61,7 @@ export const zhCN: Messages = {
   'pptx.invalid_format': 'PPT 文件格式错误或已损坏',
   'pptx.no_pages': 'PPT 文件无有效页面',
   'pptx.timeout': '加载超时，请检查网络或稍后重试',
+  'pptx.legacy_unsupported': '旧版二进制 .ppt（Office 97-2003）不支持预览，请用 PowerPoint 或 WPS 另存为 .pptx 后重试',
 
   // ─────── msg ───────
   'msg.parse_failed': 'Outlook 邮件解析失败',
@@ -79,7 +80,7 @@ export const zhCN: Messages = {
   'video.load_failed_with_error': '视频加载失败: {error}',
   'video.format_not_supported': '浏览器不支持 {format} 格式，建议转换为 MP4/WebM 格式',
   'video.unsupported_title': '该视频格式无法在浏览器中直接播放',
-  'video.unsupported_detail': '{format} 是浏览器原生不支持的容器/编码（常见于 AVI / WMV / FLV 及部分 MKV）。请下载到本地播放器观看，或转换为 MP4（H.264 + AAC）。',
+  'video.unsupported_detail': '{format} 是浏览器原生不支持的容器/编码（常见于 AVI / WMV / FLV / RM / MPEG / SWF 及部分 MKV）。请下载到本地播放器观看，或转换为 MP4（H.264 + AAC）。',
   'video.codec_not_supported_detail': '视频或音频编码 {codecs} 浏览器无法解码。请转换为 MP4（H.264 + AAC）后再预览。',
 
   // ─────── audio (aria-label) ───────

@@ -85,6 +85,13 @@ export type { ZipEntryInfo, ZipTreeNode, ZipHandle } from './utils/zipReader';
 // 导出 Excel 数据转换
 export { convertWorkbookToSpreadsheetData, convertCsvToSpreadsheetData } from './utils/excelDataConverter';
 
+// 导出二进制容器探测（旧版 Office 二进制格式识别）
+export { isOleCompoundDocument } from './utils/binaryFormat';
+
+// 导出 TGA 图片解码（零依赖，浏览器 loader 与测试共用）
+export { decodeTgaImage } from './utils/tgaDecoder';
+export type { DecodedTgaImage } from './utils/tgaDecoder';
+
 // 导出 PDF.js Worker 配置
 export { configurePdfWorker, getPdfDocumentOptions } from './utils/pdfWorker';
 export type { PdfWorkerOptions, PdfDocumentOptions } from './utils/pdfWorker';

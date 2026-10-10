@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { init } from 'pptx-preview';
+import { isOleCompoundDocument } from '@opsbli/file-preview-core';
 import { useTranslator } from '../../i18n/LocaleContext';
 import { useFetcher } from '../../RequestContext';
 import { RendererError } from '../RendererError';
@@ -176,6 +177,11 @@ export const PptxRenderer = forwardRef<RendererHandle, PptxRendererProps>(({ url
         // 验证文件大小
         if (arrayBuffer.byteLength === 0) {
           throw new Error('文件为空');
+        }
+
+        // 旧版二进制 .ppt（OLE 复合文档）不被 pptx-preview 支持，提前给出明确提示
+        if (isOleCompoundDocument(arrayBuffer)) {
+          throw new Error(t('pptx.legacy_unsupported'));
         }
 
         arrayBufferRef.current = arrayBuffer;

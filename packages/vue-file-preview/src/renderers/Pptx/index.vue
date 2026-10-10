@@ -4,6 +4,7 @@ import type { ToolbarGroup } from '../toolbar.types';
 
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { init } from 'pptx-preview';
+import { isOleCompoundDocument } from '@opsbli/file-preview-core';
 import { useTranslator } from '../../composables/useTranslator';
 import { useFetcher } from '../../composables/useRequest';
 import RendererError from '../RendererError.vue';
@@ -92,6 +93,9 @@ const loadPptx = async () => {
 
     const arrayBuffer = await response.arrayBuffer();
     if (arrayBuffer.byteLength === 0) throw new Error('文件为空');
+
+    // 旧版二进制 .ppt（OLE 复合文档）不被 pptx-preview 支持，提前给出明确提示
+    if (isOleCompoundDocument(arrayBuffer)) throw new Error(t.value('pptx.legacy_unsupported'));
 
     arrayBufferRef = arrayBuffer;
 

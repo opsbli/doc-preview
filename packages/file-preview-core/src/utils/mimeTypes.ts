@@ -33,6 +33,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   jp2: 'image/jp2',
   jpx: 'image/jpx',
   j2k: 'image/jp2',
+  tga: 'image/x-tga',
 
   // 文档格式
   pdf: 'application/pdf',
@@ -56,6 +57,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   markdown: 'text/markdown',
   txt: 'text/plain',
   zip: 'application/zip',
+  jar: 'application/java-archive',
 
   // 字体
   ttf: 'font/ttf',
@@ -74,6 +76,13 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   m4v: 'video/mp4',
   '3gp': 'video/3gpp',
   flv: 'video/x-flv',
+  wmv: 'video/x-ms-wmv',
+  asf: 'video/x-ms-asf',
+  rm: 'application/vnd.rn-realmedia',
+  rmvb: 'application/vnd.rn-realmedia-vbr',
+  mpeg: 'video/mpeg',
+  mpg: 'video/mpeg',
+  swf: 'application/x-shockwave-flash',
 
   // 音频
   mp3: 'audio/mpeg',
@@ -140,6 +149,7 @@ export function isAdvancedImageFormat(mimeType: string): boolean {
     'image/vnd.adobe.photoshop',
     'image/jp2',
     'image/jpx',
+    'image/x-tga',
   ];
   return advancedFormats.includes(mimeType);
 }

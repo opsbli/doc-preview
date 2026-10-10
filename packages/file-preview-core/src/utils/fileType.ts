@@ -16,7 +16,7 @@ export function getFileType(file: PreviewFile): FileType {
       // RAW 格式
       'cr2', 'nef', 'arw', 'dng', 'raf', 'orf',
       // 其他专业格式
-      'psd', 'jp2', 'jpx', 'j2k',
+      'psd', 'jp2', 'jpx', 'j2k', 'tga',
     ].includes(ext)
   ) {
     return 'image';
@@ -60,7 +60,13 @@ export function getFileType(file: PreviewFile): FileType {
   ) {
     return 'subtitle';
   }
-  if (ext === 'zip' || mimeType === 'application/zip' || mimeType === 'application/x-zip-compressed') {
+  if (
+    ext === 'zip' ||
+    ext === 'jar' ||
+    mimeType === 'application/zip' ||
+    mimeType === 'application/x-zip-compressed' ||
+    mimeType === 'application/java-archive'
+  ) {
     return 'zip';
   }
   if (
@@ -85,7 +91,14 @@ export function getFileType(file: PreviewFile): FileType {
   ) {
     return 'cad';
   }
-  if (mimeType.startsWith('video/') || ['mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv', 'm4v', '3gp', 'flv'].includes(ext)) {
+  if (
+    mimeType.startsWith('video/') ||
+    [
+      'mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv', 'm4v', '3gp', 'flv',
+      // 需要服务端转码才能播放的容器：此处仍归入 video，由渲染器给出明确提示
+      'wmv', 'asf', 'rm', 'rmvb', 'mpeg', 'mpg', 'swf',
+    ].includes(ext)
+  ) {
     return 'video';
   }
   if (mimeType.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'].includes(ext)) {
@@ -254,6 +267,13 @@ export function getVideoMimeType(url: string): string {
     m4v: 'video/mp4',
     '3gp': 'video/3gpp',
     flv: 'video/x-flv',
+    wmv: 'video/x-ms-wmv',
+    asf: 'video/x-ms-asf',
+    rm: 'application/vnd.rn-realmedia',
+    rmvb: 'application/vnd.rn-realmedia-vbr',
+    mpeg: 'video/mpeg',
+    mpg: 'video/mpeg',
+    swf: 'application/x-shockwave-flash',
   };
   return typeMap[ext] || 'video/mp4';
 }

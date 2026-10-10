@@ -61,6 +61,7 @@ export const enUS: Messages = {
   'pptx.invalid_format': 'PPT file format is invalid or corrupted',
   'pptx.no_pages': 'PPT file has no valid pages',
   'pptx.timeout': 'Loading timed out, please check your network and retry',
+  'pptx.legacy_unsupported': 'Legacy binary .ppt (Office 97-2003) is not supported. Please save the file as .pptx and retry',
 
   // ─────── msg ───────
   'msg.parse_failed': 'Failed to parse Outlook message',
@@ -79,7 +80,7 @@ export const enUS: Messages = {
   'video.load_failed_with_error': 'Failed to load video: {error}',
   'video.format_not_supported': 'Browser does not support {format} format. Please convert to MP4/WebM',
   'video.unsupported_title': 'This video format cannot be played in the browser',
-  'video.unsupported_detail': '{format} is a container/codec that browsers do not natively support (typical for AVI / WMV / FLV and some MKV files). Please download and play it in a local player, or convert to MP4 (H.264 + AAC).',
+  'video.unsupported_detail': '{format} is a container/codec that browsers do not natively support (typical for AVI / WMV / FLV / RM / MPEG / SWF and some MKV files). Please download and play it in a local player, or convert to MP4 (H.264 + AAC).',
   'video.codec_not_supported_detail': 'The video or audio codec ({codecs}) cannot be decoded by the browser. Please convert to MP4 (H.264 + AAC) before previewing.',
 
   // ─────── audio (aria-label) ───────

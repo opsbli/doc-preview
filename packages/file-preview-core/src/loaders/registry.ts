@@ -84,6 +84,9 @@ export async function getLoaderForMimeType(mimeType: string): Promise<ImageDecod
     } else if (mimeType === 'image/jp2' || mimeType === 'image/jpx') {
       const module = await import('./jp2Loader');
       loader = module.default;
+    } else if (mimeType === 'image/x-tga' || mimeType === 'image/tga') {
+      const module = await import('./tgaLoader');
+      loader = module.default;
     }
 
     // 缓存 loader
