@@ -42,7 +42,8 @@
     "pub:major:vue": "pnpm version:major:vue && pnpm pub:vue",
     "size": "size-limit",
     "size:why": "size-limit --why",
-    "measure": "node scripts/measure-bundle.mjs"
+    "measure": "node scripts/measure-bundle.mjs",
+    "pub:core": "pnpm --filter @opsbli/file-preview-core pub"
   },
   "repository": {
     "type": "git",

@@ -46,7 +46,8 @@
   "scripts": {
     "build": "vite build && tsc --project tsconfig.json",
     "dev": "vite build --watch --emptyOutDir false",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "pub": "node ../../scripts/check-npm-login.mjs && pnpm publish --registry https://registry.npmjs.com"
   },
   "peerDependencies": {
     "exceljs": "^4.4.0",
