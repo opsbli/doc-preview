@@ -63,8 +63,8 @@ if [ -n "$GITHUB_ACTIONS" ]; then
   echo "检测到 CI 环境，使用 HTTPS 推送..."
   git push -f https://x-access-token:${GITHUB_TOKEN}@github.com/opsbli/doc-preview.git HEAD:gh-pages
 else
-  echo "本地环境，使用 SSH 推送..."
-  git push -f git@github.com:opsbli/doc-preview.git HEAD:gh-pages
+  echo "本地环境，使用 HTTPS 推送..."
+  git push -f https://github.com/opsbli/doc-preview.git HEAD:gh-pages
 fi
 
 cd ..
