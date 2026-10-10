@@ -6,6 +6,11 @@ import { DXFLoader } from 'three-dxf-loader';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
+import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader';
+import { AMFLoader } from 'three/examples/jsm/loaders/AMFLoader';
 import { useTranslator } from '../../composables/useTranslator';
 import { useFetcher } from '../../composables/useRequest';
 import { ToolbarEventEmitter } from '../base.types';
@@ -247,6 +252,20 @@ const loadModel = () => {
     loader = new OBJLoader(manager);
   } else if (ext === 'gltf' || ext === 'glb') {
     loader = new GLTFLoader(manager);
+  } else if (ext === 'ply') {
+    loader = new PLYLoader(manager);
+  } else if (ext === 'fbx') {
+    loader = new FBXLoader(manager);
+  } else if (ext === 'dae') {
+    loader = new ColladaLoader(manager);
+  } else if (ext === '3mf') {
+    loader = new ThreeMFLoader(manager);
+  } else if (ext === 'amf') {
+    loader = new AMFLoader(manager);
+  } else if (ext === 'wrl') {
+    // wre 的 VRMLLoader 依赖较大的 chevrotain 解析器（~150KB），
+    // 改为在解析阶段动态 import，避免给 stl/obj 等常用格式增加体积
+    loader = null;
   } else {
     error.value = t.value('cad.parse_failed');
     loading.value = false;
@@ -266,8 +285,8 @@ const loadModel = () => {
 
     let loadedModel: THREE.Object3D;
 
-    if (ext === 'stl') {
-      // STL 返回 geometry
+    if (ext === 'stl' || ext === 'ply') {
+      // STL / PLY 返回 geometry
       const geometry = object as THREE.BufferGeometry;
       const material = new THREE.MeshPhongMaterial({
         color: 0x888888,
@@ -275,11 +294,11 @@ const loadModel = () => {
         side: THREE.DoubleSide,
       });
       loadedModel = new THREE.Mesh(geometry, material);
-    } else if (ext === 'gltf' || ext === 'glb') {
-      // GLTF/GLB 返回 { scene, ... }
+    } else if (ext === 'gltf' || ext === 'glb' || ext === 'dae') {
+      // GLTF/GLB 与 Collada 返回 { scene, ... }
       loadedModel = object.scene as THREE.Object3D;
     } else {
-      // DXF 和 OBJ 返回 Object3D
+      // DXF / OBJ / FBX / 3MF / AMF / WRL 返回 Object3D
       loadedModel = object as THREE.Object3D;
 
       // 为没有材质的对象添加默认材质
@@ -334,7 +353,7 @@ const loadModel = () => {
       });
 
   loadPromise
-    .then((data: ArrayBuffer | undefined) => {
+    .then(async (data: ArrayBuffer | undefined) => {
       if (isCleanedUp || !data) return;
 
       if (ext === 'stl') {
@@ -357,6 +376,32 @@ const loadModel = () => {
           },
           (err: any) => handleLoadError(err)
         );
+      } else if (ext === 'ply') {
+        const object = loader.parse(data);
+        handleLoadSuccess(object, ext);
+      } else if (ext === 'fbx') {
+        const object = loader.parse(data, '');
+        handleLoadSuccess(object, ext);
+      } else if (ext === '3mf') {
+        const object = loader.parse(data);
+        handleLoadSuccess(object, ext);
+      } else if (ext === 'amf') {
+        const object = loader.parse(data);
+        handleLoadSuccess(object, ext);
+      } else if (ext === 'wrl') {
+        try {
+          const { VRMLLoader } = await import('three/examples/jsm/loaders/VRMLLoader');
+          const text = new TextDecoder('utf-8').decode(data);
+          const object = new VRMLLoader(manager).parse(text);
+          handleLoadSuccess(object, ext);
+        } catch (err) {
+          handleLoadError(err as Error);
+        }
+      } else if (ext === 'dae') {
+        // ColladaLoader 需要字符串（外部纹理引用无法解析，仅按内嵌材质渲染）
+        const text = new TextDecoder('utf-8').decode(data);
+        const parsed = loader.parse(text, '');
+        handleLoadSuccess(parsed, ext);
       } else if (ext === 'dxf') {
         // DXFLoader 需要字符串
         const decoder = new TextDecoder('utf-8');

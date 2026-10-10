@@ -103,13 +103,18 @@ export function getFileType(file: PreviewFile): FileType {
     return 'font';
   }
   if (
-    ['dxf', 'stl', 'obj', 'gltf', 'glb'].includes(ext) ||
+    ['dxf', 'stl', 'obj', 'gltf', 'glb', 'ply', 'fbx', 'dae', 'wrl', '3mf', 'amf'].includes(ext) ||
     mimeType === 'application/dxf' ||
     mimeType === 'application/vnd.ms-pki.stl' ||
     mimeType === 'model/stl' ||
     mimeType === 'model/obj' ||
     mimeType === 'model/gltf+json' ||
-    mimeType === 'model/gltf-binary'
+    mimeType === 'model/gltf-binary' ||
+    mimeType === 'model/ply' ||
+    mimeType === 'model/vnd.collada+xml' ||
+    mimeType === 'model/vrml' ||
+    mimeType === 'model/3mf' ||
+    mimeType === 'application/x-amf'
   ) {
     return 'cad';
   }

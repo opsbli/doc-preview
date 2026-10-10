@@ -148,7 +148,7 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>CAD / 3D</strong></td>
-  <td>DXF, STL, OBJ, GLTF, GLB</td>
+  <td>DXF, STL, OBJ, GLTF, GLB, PLY, FBX, DAE, 3MF, AMF, WRL</td>
   <td>交互式 3D 查看器、旋转/缩放/平移、线框切换、网格与坐标轴</td>
 </tr>
 <tr>

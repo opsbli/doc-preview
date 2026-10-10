@@ -224,6 +224,15 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - **OBJ** - `.obj` (Wavefront 3D 模型)
 - **GLTF** - `.gltf` (现代 Web 3D 格式，JSON 描述)
 - **GLB** - `.glb` (GLTF 二进制版本)
+- **PLY** - `.ply` (多边形网格，支持 ASCII / 二进制)
+- **FBX** - `.fbx` (Autodesk 交换格式)
+- **DAE** - `.dae` (COLLADA，仅按内嵌材质渲染，外部纹理引用无法解析)
+- **3MF** - `.3mf` (3D Manufacturing Format)
+- **AMF** - `.amf` (Additive Manufacturing File)
+- **WRL** - `.wrl` (VRML；其解析器体积较大，仅在预览 wrl 时动态加载)
+
+未支持的 3D / 工程格式：`3ds`、`off`、`step`、`iges`、`ifc`、`brep`、`bim`、`fcstd`
+（three.js 无对应 loader；工程 CAD 类格式在纯前端不具备可行路径）。
 
 ### 特性
 

@@ -117,6 +117,12 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   obj: 'model/obj',
   gltf: 'model/gltf+json',
   glb: 'model/gltf-binary',
+  ply: 'model/ply',
+  fbx: 'application/x-fbx',
+  dae: 'model/vnd.collada+xml',
+  wrl: 'model/vrml',
+  '3mf': 'model/3mf',
+  amf: 'application/x-amf',
 };
 
 /**

@@ -121,3 +121,56 @@ declare module 'three/examples/jsm/loaders/GLTFLoader' {
     setMeshoptDecoder(meshoptDecoder: any): this;
   }
 }
+declare module 'three/examples/jsm/loaders/PLYLoader' {
+  import { BufferGeometry, Loader, LoadingManager } from 'three';
+  export class PLYLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(data: ArrayBuffer | string): BufferGeometry;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/FBXLoader' {
+  import { Group, Loader, LoadingManager } from 'three';
+  export class FBXLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(data: ArrayBuffer | string, path: string): Group;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/ColladaLoader' {
+  import { Loader, LoadingManager, Scene } from 'three';
+  export interface Collada {
+    scene: Scene;
+    kinematics: unknown;
+    library: unknown;
+    animations: unknown[];
+  }
+  export class ColladaLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(text: string, path: string): Collada;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/3MFLoader' {
+  import { Group, Loader, LoadingManager } from 'three';
+  export class ThreeMFLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(data: ArrayBuffer | string): Group;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/AMFLoader' {
+  import { Group, Loader, LoadingManager } from 'three';
+  export class AMFLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(data: ArrayBuffer | string): Group;
+  }
+}
+
+declare module 'three/examples/jsm/loaders/VRMLLoader' {
+  import { Group, Loader, LoadingManager } from 'three';
+  export class VRMLLoader extends Loader {
+    constructor(manager?: LoadingManager);
+    parse(text: string): Group;
+  }
+}
