@@ -43,6 +43,7 @@ export type FileType =
   | 'bpmn'
   | 'drawio'
   | 'rtf'
+  | 'dcm'
   | 'eml'
   | 'text'
   | 'font'
@@ -75,6 +76,7 @@ export const SUPPORTED_FILE_TYPES: Exclude<FileType, 'unsupported'>[] = [
   'bpmn',
   'drawio',
   'rtf',
+  'dcm',
   'eml',
   'text',
   'font',

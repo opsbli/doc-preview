@@ -74,6 +74,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   drawio: 'application/vnd.jgraph.mxfile',
   dio: 'application/vnd.jgraph.mxfile',
   rtf: 'application/rtf',
+  dcm: 'application/dicom',
 
   // 字体
   ttf: 'font/ttf',

@@ -175,6 +175,14 @@ export const enUS: Messages = {
   // ─────── rtf ───────
   'rtf.load_failed': 'Failed to load RTF file',
   'rtf.parse_failed': 'Failed to parse RTF document',
+
+  // ─────── dcm ───────
+  'dcm.loading': 'Loading DICOM image...',
+  'dcm.load_failed': 'Failed to load DICOM image',
+  'dcm.parse_failed': 'Failed to parse DICOM image',
+  'dcm.window_level_hint': 'Drag to adjust window level (horizontal: width, vertical: center)',
+  'dcm.frame': 'Frame {current} / {total}',
+  'dcm.window_level': 'W/L {center} / {width}',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

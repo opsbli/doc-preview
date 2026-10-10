@@ -107,6 +107,10 @@ export type { ParsedEml, EmailAddress, EmailAttachment } from './utils/emlParser
 export { parseDrawio, decodeDrawioPayload } from './utils/drawioParser';
 export type { DrawioDiagram, ParsedDrawio } from './utils/drawioParser';
 
+// 导出 DICOM 解析与渲染
+export { parseDicomImage, renderDicomFrame } from './utils/dicomParser';
+export type { DicomImage, DicomMeta } from './utils/dicomParser';
+
 // 导出通用压缩包读取（tar / gzip / 7z / rar）
 export { loadArchive, detectArchiveFormat } from './utils/archiveReader';
 export type { ArchiveFormat, ArchiveHandle } from './utils/archiveReader';

@@ -102,6 +102,9 @@ export function getFileType(file: PreviewFile): FileType {
   if (ext === 'rtf' || mimeType === 'application/rtf' || mimeType === 'text/rtf') {
     return 'rtf';
   }
+  if (ext === 'dcm' || mimeType === 'application/dicom' || mimeType === 'application/dicom+json') {
+    return 'dcm';
+  }
   if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||

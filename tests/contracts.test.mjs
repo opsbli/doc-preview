@@ -49,6 +49,7 @@ test('file type detection covers documented representative formats', async () =>
     'flow.drawio': 'drawio',
     'old.dio': 'drawio',
     'note.rtf': 'rtf',
+    'scan.dcm': 'dcm',
     'config.toml': 'text',
     'run.bat': 'text',
     'photo.tga': 'image',
@@ -318,6 +319,44 @@ test('html preview preprocessing strips base and meta refresh', async () => {
   assert.match(prepared, /<p>keep me<\/p>/);
 });
 
+test('dicom parser renders uncompressed images and rejects compressed syntaxes', async () => {
+  const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
+  const { parseDicomImage, renderDicomFrame } = await import(coreUrl);
+
+  const image = parseDicomImage(makeDicom());
+  assert.equal(image.width, 2);
+  assert.equal(image.height, 2);
+  assert.equal(image.frames, 1);
+  assert.equal(image.samplesPerPixel, 1);
+  assert.equal(image.inverted, false);
+  assert.equal(image.windowCenter, 128);
+  assert.equal(image.windowWidth, 256);
+  assert.equal(image.minValue, 0);
+  assert.equal(image.maxValue, 255);
+  assert.equal(image.meta.modality, 'OT');
+  assert.equal(image.meta.transferSyntaxUid, '1.2.840.10008.1.2.1');
+
+  const rgba = renderDicomFrame(image, 0, image.windowCenter, image.windowWidth);
+  assert.equal(rgba.length, 16);
+  // 低值 -> 黑，高值 -> 近白，且单调递增
+  assert.equal(rgba[0], 0);
+  assert.equal(rgba[3], 255);
+  const grays = [rgba[0], rgba[4], rgba[8], rgba[12]];
+  assert.ok(grays[0] < grays[1] && grays[1] < grays[2] && grays[2] < grays[3], `应单调递增: ${grays}`);
+  assert.ok(grays[3] >= 250, `最高值应接近白: ${grays[3]}`);
+
+  // 收窄窗宽应提升对比度（高值仍为白，低值仍为黑）
+  const narrow = renderDicomFrame(image, 0, 200, 100);
+  assert.equal(narrow[0], 0);
+  assert.equal(narrow[12], 255);
+
+  // 压缩传输语法：给出包含具体语法的明确错误
+  assert.throws(
+    () => parseDicomImage(makeDicom({ transferSyntaxUid: '1.2.840.10008.1.2.4.90' })),
+    /JPEG 2000 Lossless/,
+  );
+});
+
 test('drawio parser handles uncompressed and compressed diagrams', async () => {
   const zlib = await import('node:zlib');
   const coreUrl = pathToFileURL(path.join(root, 'packages/file-preview-core/lib/index.mjs')).href;
@@ -357,6 +396,63 @@ test('drawio parser handles uncompressed and compressed diagrams', async () => {
   // 无效内容
   await assert.rejects(() => parseDrawio('<html></html>'), /drawio/);
 });
+
+/** 构造最小可用的显式 VR Little Endian DICOM（用于验证 .dcm 解析路径） */
+function makeDicom(options = {}) {
+  const {
+    transferSyntaxUid = '1.2.840.10008.1.2.1',
+    rows = 2,
+    columns = 2,
+    pixelValues = [0, 85, 170, 255],
+    windowCenter = '128 ',
+    windowWidth = '256 ',
+  } = options;
+
+  const encoder = new TextEncoder();
+  const u16 = (value) => [value & 0xff, (value >>> 8) & 0xff];
+  const u32 = (value) => [value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff];
+  const LONG_VRS = ['OB', 'OW', 'OF', 'SQ', 'UT', 'UN'];
+
+  const element = (group, tag, vr, valueBytes) => {
+    const header = LONG_VRS.includes(vr)
+      ? [...u16(group), ...u16(tag), ...encoder.encode(vr), 0, 0, ...u32(valueBytes.length)]
+      : [...u16(group), ...u16(tag), ...encoder.encode(vr), ...u16(valueBytes.length)];
+    return [...header, ...valueBytes];
+  };
+  const text = (value) => {
+    const bytes = [...encoder.encode(value)];
+    if (bytes.length % 2 === 1) bytes.push(0x20);
+    return bytes;
+  };
+  const us = (value) => u16(value);
+
+  const metaTransferSyntax = element(0x0002, 0x0010, 'UI', text(transferSyntaxUid));
+  const fileMetaGroupLength = element(0x0002, 0x0000, 'UL', u32(metaTransferSyntax.length));
+
+  const bytes = [
+    ...new Array(128).fill(0),
+    ...encoder.encode('DICM'),
+    ...fileMetaGroupLength,
+    ...metaTransferSyntax,
+    ...element(0x0008, 0x0060, 'CS', text('OT')),
+    ...element(0x0028, 0x0002, 'US', us(1)),
+    ...element(0x0028, 0x0004, 'CS', text('MONOCHROME2')),
+    ...element(0x0028, 0x0010, 'US', us(rows)),
+    ...element(0x0028, 0x0011, 'US', us(columns)),
+    ...element(0x0028, 0x0100, 'US', us(16)),
+    ...element(0x0028, 0x0101, 'US', us(16)),
+    ...element(0x0028, 0x0102, 'US', us(15)),
+    ...element(0x0028, 0x0103, 'US', us(0)),
+    ...element(0x0028, 0x1050, 'DS', text(windowCenter)),
+    ...element(0x0028, 0x1051, 'DS', text(windowWidth)),
+  ];
+
+  const pixelBytes = [];
+  for (const value of pixelValues) pixelBytes.push(...u16(value));
+  bytes.push(...element(0x7fe0, 0x0010, 'OW', pixelBytes));
+
+  return new Uint8Array(bytes).buffer;
+}
 
 /** 构造 tar 归档（ustar，仅普通文件与目录） */
 function makeTar(files) {

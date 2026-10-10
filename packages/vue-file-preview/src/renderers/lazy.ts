@@ -38,3 +38,4 @@ export const BpmnRenderer = wrap(() => import('./Bpmn/index.vue'));
 export const HtmlRenderer = wrap(() => import('./Html/index.vue'));
 export const DrawioRenderer = wrap(() => import('./Drawio/index.vue'));
 export const RtfRenderer = wrap(() => import('./Rtf/index.vue'));
+export const DcmRenderer = wrap(() => import('./Dcm/index.vue'));

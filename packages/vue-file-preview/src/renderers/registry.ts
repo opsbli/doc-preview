@@ -27,6 +27,7 @@ import {
   HtmlRenderer,
   DrawioRenderer,
   RtfRenderer,
+  DcmRenderer,
 } from './lazy';
 
 /**
@@ -260,6 +261,13 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
   {
     fileType: 'rtf',
     component: RtfRenderer,
+    getProps: (ctx) => ({
+      url: ctx.resolvedUrl,
+    }),
+  },
+  {
+    fileType: 'dcm',
+    component: DcmRenderer,
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
     }),

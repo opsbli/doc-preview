@@ -175,6 +175,14 @@ export const zhCN: Messages = {
   // ─────── rtf ───────
   'rtf.load_failed': 'RTF 文件加载失败',
   'rtf.parse_failed': 'RTF 文件解析失败',
+
+  // ─────── dcm ───────
+  'dcm.loading': '加载医学影像...',
+  'dcm.load_failed': '医学影像加载失败',
+  'dcm.parse_failed': 'DICOM 影像解析失败',
+  'dcm.window_level_hint': '拖拽调整窗宽窗位（横向：窗宽，纵向：窗中心）',
+  'dcm.frame': '帧 {current} / {total}',
+  'dcm.window_level': 'W/L {center} / {width}',
   'mindmap.topics': '{count} 个主题',
 
   // ─────── text ───────

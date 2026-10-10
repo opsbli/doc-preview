@@ -453,6 +453,26 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 rtf.js 对复杂排版（嵌套表格、域代码、部分字体映射）还原不完整；
 对格式要求高的场景建议先转换为 PDF / DOCX 预览。
 
+## 医学影像（DICOM）
+
+- **DICOM** - `.dcm`
+
+### 特性
+
+- 基于 dicom-parser 解析，自研灰度渲染（不依赖任何服务端组件）
+- 窗宽窗位交互：在图像上拖拽调整（横向改窗宽、纵向改窗中心）
+- 多帧影像可翻页
+- 支持 MONOCHROME1 / MONOCHROME2 灰度（8/16 位）、RGB（8 位，Planar Configuration = 0）
+- 支持 Rescale Slope / Intercept 与标签自带的 Window Center / Width
+
+### 不支持的传输语法（会给出包含具体语法的明确提示）
+
+- 封装（压缩）传输语法：JPEG、JPEG-LS、JPEG 2000、RLE
+- Explicit VR Big Endian、Deflated Explicit VR LE
+- Planar Configuration = 1、YBR 系列颜色空间
+
+以上均只支持未压缩的 Implicit VR LE 与 Explicit VR LE。
+
 ## 不支持的格式
 
 对于不支持的文件格式，组件会显示一个友好的提示界面，包含：
@@ -509,6 +529,7 @@ rtf.js 对复杂排版（嵌套表格、域代码、部分字体映射）还原�
 - `bpmn` - BPMN 2.0 流程图
 - `drawio` - drawio / mxGraph 流程图
 - `rtf` - RTF 文档
+- `dcm` - DICOM 医学影像
 - `eml` - RFC 822 / MIME 邮件
 - `text` - 其他文本和代码文件
 - `font` - 字体文件（TTF / OTF / WOFF / WOFF2）
