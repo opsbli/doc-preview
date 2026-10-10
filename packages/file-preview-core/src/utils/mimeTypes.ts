@@ -65,6 +65,7 @@ export const EXTENSION_TO_MIME: Record<string, string> = {
   rar: 'application/vnd.rar',
   xmind: 'application/x-xmind',
   eml: 'message/rfc822',
+  bpmn: 'application/bpmn+xml',
 
   // 字体
   ttf: 'font/ttf',

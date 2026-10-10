@@ -34,3 +34,4 @@ export const CadRenderer = wrap(() => import('./Cad/index.vue'));
 export const MindmapRenderer = wrap(() => import('./Mindmap/index.vue'));
 export const EmlRenderer = wrap(() => import('./Eml/index.vue'));
 export const ArchiveRenderer = wrap(() => import('./Archive/index.vue'));
+export const BpmnRenderer = wrap(() => import('./Bpmn/index.vue'));

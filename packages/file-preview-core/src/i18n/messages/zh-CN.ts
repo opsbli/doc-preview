@@ -157,6 +157,11 @@ export const zhCN: Messages = {
   'archive.empty': '压缩包为空',
   'archive.select_hint': '从左侧选择文件以预览',
   'archive.truncated': '条目较多，仅显示前 {count} 个',
+
+  // ─────── bpmn ───────
+  'bpmn.loading': '加载流程图中...',
+  'bpmn.load_failed': '流程图加载失败',
+  'bpmn.parse_failed': 'BPMN 流程定义解析失败',
   'mindmap.topics': '{count} 个主题',
 
   // ─────── text ───────

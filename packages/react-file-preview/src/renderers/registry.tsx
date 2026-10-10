@@ -23,6 +23,7 @@ import {
   MindmapRenderer,
   EmlRenderer,
   ArchiveRenderer,
+  BpmnRenderer,
 } from './lazy';
 
 /**
@@ -232,6 +233,13 @@ export const BUILTIN_RENDERERS: BuiltinRendererConfig[] = [
     getProps: (ctx) => ({
       url: ctx.resolvedUrl,
       fileName: ctx.currentFile.name,
+    }),
+  },
+  {
+    fileType: 'bpmn',
+    component: BpmnRenderer,
+    getProps: (ctx) => ({
+      url: ctx.resolvedUrl,
     }),
   },
 ];

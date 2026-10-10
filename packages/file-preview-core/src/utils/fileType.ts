@@ -88,6 +88,9 @@ export function getFileType(file: PreviewFile): FileType {
   if (ext === 'eml' || mimeType === 'message/rfc822') {
     return 'eml';
   }
+  if (ext === 'bpmn' || mimeType === 'application/bpmn+xml' || mimeType === 'application/x-bpmn') {
+    return 'bpmn';
+  }
   if (
     ['ttf', 'otf', 'woff', 'woff2'].includes(ext) ||
     mimeType.startsWith('font/') ||

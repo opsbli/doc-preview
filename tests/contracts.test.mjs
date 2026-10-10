@@ -53,6 +53,7 @@ test('file type detection covers documented representative formats', async () =>
     'pkg.tgz': 'archive',
     'pkg.7z': 'archive',
     'pkg.rar': 'archive',
+    'process.bpmn': 'bpmn',
   };
 
   for (const [name, expected] of Object.entries(cases)) {

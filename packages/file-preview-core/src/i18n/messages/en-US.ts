@@ -157,6 +157,11 @@ export const enUS: Messages = {
   'archive.empty': 'The archive is empty',
   'archive.select_hint': 'Select a file on the left to preview',
   'archive.truncated': 'Too many entries, showing the first {count}',
+
+  // ─────── bpmn ───────
+  'bpmn.loading': 'Loading BPMN diagram...',
+  'bpmn.load_failed': 'Failed to load BPMN diagram',
+  'bpmn.parse_failed': 'Failed to parse BPMN definition',
   'mindmap.topics': '{count} topics',
 
   // ─────── text ───────

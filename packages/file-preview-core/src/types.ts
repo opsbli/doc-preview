@@ -39,6 +39,7 @@ export type FileType =
   | 'zip'
   | 'archive'
   | 'mindmap'
+  | 'bpmn'
   | 'eml'
   | 'text'
   | 'font'
@@ -67,6 +68,7 @@ export const SUPPORTED_FILE_TYPES: Exclude<FileType, 'unsupported'>[] = [
   'zip',
   'archive',
   'mindmap',
+  'bpmn',
   'eml',
   'text',
   'font',
