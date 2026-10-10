@@ -56,13 +56,18 @@ class AvifLoader implements ImageDecoder {
 
     try {
       // 动态加载 @jsquash/avif 解码库（运行时由使用方包提供）
-      // @ts-ignore - 无类型声明，仅运行时存在
+      // @ts-ignore - 可选 peer，类型不一定可解析
       const avifModule = await import('@jsquash/avif');
 
       const arrayBuffer = file instanceof Blob ? await file.arrayBuffer() : file;
 
-      // 解码为 ImageData
-      const imageData = await avifModule.decode(arrayBuffer);
+      // 解码为 ImageData（解码器可能返回 null）
+      const decoded = await avifModule.decode(arrayBuffer);
+      if (!decoded) {
+        throw new Error('AVIF 解码失败：解码器未返回图像数据');
+      }
+      // 跨库的 ImageData 类型定义不同，运行时为同一结构
+      const imageData = decoded as unknown as ImageData;
 
       // 渲染到 Canvas
       const canvas = document.createElement('canvas');

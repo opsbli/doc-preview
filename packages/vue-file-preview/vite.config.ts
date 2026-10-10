@@ -73,6 +73,10 @@ export default defineConfig(({ mode }) => {
     'three',
     /^three(\/.*)?$/,
     'three-dxf-loader',
+    // 工作区核心包：已改为运行时依赖，保持 external 以避免其懒加载 chunk
+    // （含内联的 7z wasm）被 react/vue 产物重复内联
+    '@opsbli/file-preview-core',
+    /^@opsbli\/file-preview-core(\/.*)?$/,
     // 流程图 / 图编辑 / RTF（体积较大，保持 external 由使用方 bundler 解析）
     'bpmn-js',
     /^bpmn-js(\/.*)?$/,

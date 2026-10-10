@@ -76,6 +76,7 @@
     "@kenjiuno/msgreader": "^1.28.0",
     "@likecoin/epub-ts": "^0.6.0",
     "@maxgraph/core": "^0.24.0",
+    "@opsbli/file-preview-core": "workspace:*",
     "@traptitech/markdown-it-katex": "^3.6.0",
     "@zip.js/zip.js": "^2.8.45",
     "ag-psd": "^30.1.1",
@@ -102,7 +103,6 @@
     "x-data-spreadsheet": "^1.1.9"
   },
   "devDependencies": {
-    "@opsbli/file-preview-core": "workspace:*",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
     "@types/opentype.js": "1.3.10",
