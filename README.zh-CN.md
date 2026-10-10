@@ -118,12 +118,12 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>图片</strong></td>
-  <td>JPG, PNG, GIF, WebP, SVG, BMP, ICO, AVIF, HEIC</td>
+  <td>JPG, PNG, GIF, WebP, SVG, BMP, ICO, AVIF, HEIC, TIFF, PSD, TGA, JPEG 2000, RAW</td>
   <td>缩放 (0.01x-10x)、旋转、拖拽、鼠标滚轮缩放</td>
 </tr>
 <tr>
   <td><strong>视频</strong></td>
-  <td>MP4, WebM, OGG, MOV, AVI, MKV, M4V, 3GP, FLV</td>
+  <td>MP4, WebM, OGG, MOV, M4V, 3GP（AVI/WMV/FLV/RM 等浏览器不支持的容器会给出明确转码提示）</td>
   <td>自定义播放器、进度控制、音量调节、全屏</td>
 </tr>
 <tr>
@@ -133,7 +133,7 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>文档</strong></td>
-  <td>PDF, DOCX, XLSX, PPTX/PPT</td>
+  <td>PDF, DOCX, XLSX/XLSM/XLS, PPTX/PPT</td>
   <td>分页、缩放、幻灯片预览、表格查看</td>
 </tr>
 <tr>
@@ -153,8 +153,8 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>其他</strong></td>
-  <td>Markdown, CSV, JSON, XML, ZIP, MSG, EPUB, 字体</td>
-  <td>渲染、格式化、树形视图、字符集预览</td>
+  <td>Markdown, CSV, JSON, XML, ZIP/JAR/TAR/GZ, MSG/EML, EPUB/MOBI, XMind, BPMN, 字体</td>
+  <td>渲染、格式化、树形视图、思维导图折叠、流程渲染、字符集预览</td>
 </tr>
 </table>
 

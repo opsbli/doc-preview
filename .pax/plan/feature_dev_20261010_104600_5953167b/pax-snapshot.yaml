@@ -7,11 +7,12 @@
 meta:
   version: 2.0
   created_at: "2026-10-10T10:46:00+08:00"
-  updated_at: "2026-10-10T10:52:00+08:00"
+  updated_at: "2026-10-10T11:15:00+08:00"
   skill_lineage:
     - pax-orchestrate
     - pax-clarify
     - pax-plan
+    - pax-execute
 
 goal:
   statement: >-
@@ -178,6 +179,43 @@ plan:
     on_failure: 按 step.rollback 就地还原
     on_alert: 停止后续里程碑，保留已通过提交
     default: git revert 对应里程碑提交；全局放弃可 reset --hard 回到 a8800f8
+
+execution:
+  id: p0-format-batch-exec-20261010
+  mode: normal
+  status: completed
+  completed_at: "2026-10-10T11:15:00+08:00"
+  log:
+    - M1 零依赖项 + 一致性修复：tga（自研纯 TS 解码）/ jar / 视频口径 / .ppt OLE 检测；S6 补充测试
+    - M2 xmind 思维导图：core xmindParser + 双端 Mindmap 渲染器
+    - M3 eml 邮件：core emlParser + htmlSanitize + 双端 Eml 渲染器
+    - M4 压缩包扩展：core archiveReader（自研 tar + fflate gzip）+ 双端 Archive 渲染器
+    - M5 bpmn 流程图：双端 Bpmn 渲染器（bpmn-js 动态 chunk）
+    - M6 xls/xlsm：core xlsDataConverter（SheetJS）+ 两个 Xlsx 渲染器按扩展名分派
+    - M7 文档（supported-types.md / README 双语）、样例文件与端到端校验、全量验证
+  deviations:
+    - step: S13/S14
+      change: 7z/rar 未接入 WASM 解压器，改为解析时给出明确提示，并从 core 移除 libarchive.js 依赖
+      reason: >-
+        libarchive.js 的 worker 硬编码同目录 libarchive.wasm（Emscripten locateFile 默认按脚本路径解析），
+        在 vite lib 模式下需使用方额外部署两个静态资源，与本库自包含、按需 chunk 的设计冲突。
+      authorized_by: 计划第五节「回滚策略」中的 libarchive.js 集成失败回退条款（用户已批准该计划）
+  changes:
+    - core: utils/tgaDecoder.ts、utils/binaryFormat.ts、loaders/tgaLoader.ts、utils/xmindParser.ts、utils/emlParser.ts、utils/htmlSanitize.ts、utils/archiveReader.ts、utils/xlsDataConverter.ts
+    - core: types.ts / utils/fileType.ts / utils/mimeTypes.ts / utils/excelDataConverter.ts / index.ts / i18n/messages/{zh-CN,en-US}.ts
+    - react-file-preview: renderers/{Mindmap,Eml,Archive,Bpmn}、renderers/{Pptx,Video,Xlsx} 调整、lazy.tsx、registry.tsx
+    - vue-file-preview: renderers/{Mindmap,Eml,Archive,Bpmn}、renderers/{Pptx,Video,Xlsx} 调整、lazy.ts、registry.ts
+    - tests/contracts.test.mjs：识别断言、TGA/XMind/EML/清洗/压缩包/XLS 共 14 个用例
+    - docs: packages/docs/guide/supported-types.md（含能力边界章节）、README.md、README.zh-CN.md
+  commits:
+    - 36a35e5 chore(pax): 归档格式支持调研与 P0 批次编排快照
+    - 79eb1a7 feat(core): 新增 TGA 图片预览并收紧二进制 Office 与视频识别
+    - 9ad717f feat(mindmap): 新增 xmind 思维导图预览（React + Vue）
+    - b9c36cc chore(deps): 新增 P0 批次依赖（postal-mime / fflate / libarchive.js / xlsx / bpmn-js）
+    - 262c4cf feat(eml): 新增 eml 邮件预览（React + Vue）
+    - ed43892 feat(archive): 新增 tar/tgz/gz 压缩包预览（React + Vue）
+    - 14e4f76 feat(bpmn): 新增 BPMN 流程图预览（React + Vue）
+    - 107903b feat(xlsx): 支持旧版 .xls 与 .xlsm（React + Vue）
 
 orchestration:
   intent:

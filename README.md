@@ -118,12 +118,12 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>Images</strong></td>
-  <td>JPG, PNG, GIF, WebP, SVG, BMP, ICO, AVIF, HEIC</td>
+  <td>JPG, PNG, GIF, WebP, SVG, BMP, ICO, AVIF, HEIC, TIFF, PSD, TGA, JPEG 2000, RAW</td>
   <td>Zoom (0.01x-10x), rotate, drag, mouse wheel zoom</td>
 </tr>
 <tr>
   <td><strong>Videos</strong></td>
-  <td>MP4, WebM, OGG, MOV, AVI, MKV, M4V, 3GP, FLV</td>
+  <td>MP4, WebM, OGG, MOV, M4V, 3GP (browser-unsupported containers such as AVI/WMV/FLV/RM show an explicit transcode hint)</td>
   <td>Custom player, progress control, volume adjustment, fullscreen</td>
 </tr>
 <tr>
@@ -133,7 +133,7 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>Documents</strong></td>
-  <td>PDF, DOCX, XLSX, PPTX/PPT</td>
+  <td>PDF, DOCX, XLSX/XLSM/XLS, PPTX/PPT</td>
   <td>Pagination, zoom, slide preview, spreadsheet view</td>
 </tr>
 <tr>
@@ -153,8 +153,8 @@ import '@opsbli/vue-file-preview/style.css';
 </tr>
 <tr>
   <td><strong>Others</strong></td>
-  <td>Markdown, CSV, JSON, XML, ZIP, MSG, EPUB, Fonts</td>
-  <td>Rendering, formatting, tree view, character set preview</td>
+  <td>Markdown, CSV, JSON, XML, ZIP/JAR/TAR/GZ, MSG/EML, EPUB/MOBI, XMind, BPMN, Fonts</td>
+  <td>Rendering, formatting, tree view, mind-map folding, diagram rendering, character set preview</td>
 </tr>
 </table>
 

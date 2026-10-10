@@ -49,6 +49,9 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - **JPEG 2000** - `.jp2`, `.jpx`, `.j2k`
   - Safari 原生支持，其他浏览器通过 WASM 解码（`@jsquash/jpeg2000`）
   - 常见于医学影像、地图瓦片
+- **TGA（Truevision Targa）** - `.tga`
+  - 常见于游戏贴图与 3D 纹理
+  - 纯 TypeScript 解码（未压缩与 RLE，8/16/24/32bpp，含调色板，支持上下/左右原点），不引入额外依赖
 
 #### 浏览器兼容性
 
@@ -60,6 +63,7 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 | RAW | 嵌入预览 | 嵌入预览 | 嵌入预览 | 嵌入预览 |
 | PSD | WASM | WASM | WASM | WASM |
 | JPEG 2000 | WASM | WASM | 原生 | WASM |
+| TGA | JS 解码 | JS 解码 | JS 解码 | JS 解码 |
 
 #### 性能特征
 
@@ -76,15 +80,20 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - **WebM** - `.webm`
 - **OGG** - `.ogg`, `.ogv`
 - **MOV** - `.mov`
-- **AVI** - `.avi`
-- **MKV** - `.mkv`
 - **M4V** - `.m4v`
 - **3GP** - `.3gp`
-- **FLV** - `.flv`
 
 ### 特性
 
 - 基于 Video.js 播放器
+
+#### 容器兼容性说明
+
+以下容器仍会被识别为视频类型，但浏览器原生无法播放（无论编码），组件会给出明确的「需转码」提示，不会静默失败：
+
+`avi` `wmv` `asf` `rm` `rmvb` `mpeg` `mpg` `swf` `flv`，以及部分编码的 `.mkv`。
+
+纯前端架构下无法转码，如需播放这些格式，请在服务端转为 MP4（H.264 + AAC）。
 - 播放/暂停控制
 - 音量调节
 - 进度条
@@ -127,7 +136,10 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 
 ### Excel 表格
 
-- **XLSX** - `.xlsx`
+- **XLSX** - `.xlsx`（解析：exceljs）
+- **XLSM** - `.xlsm`（宏不执行，仅预览内容；解析：exceljs）
+- **XLS** - `.xls`（Office 97-2003 二进制，解析：SheetJS，按需加载 chunk）
+  - 旧版 `.xls` 仅还原单元格文本、行列结构与合并区域；字体/底色/边框等样式仍由 OOXML 路径提供
 
 ### PowerPoint 演示文稿
 
@@ -142,14 +154,21 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - 显示所有工作表（Excel）
 - 平铺/幻灯片两种显示模式（PowerPoint，16:9 宽高比）
 
-## Outlook 邮件
+## 邮件
+
+### Outlook 邮件（MSG）
 
 - **MSG** - `.msg`
 
+### EML 邮件
+
+- **EML** - `.eml`（RFC 822 / MIME）
+
 ### 特性
 
-- 解析邮件头信息（发件人、收件人、主题、日期）
-- 邮件正文渲染
+- 解析邮件头信息（发件人、收件人、抄送、主题、日期、Message-ID）
+- 邮件正文渲染（HTML 正文经尽力而为的清洗后展示：移除 script/iframe 等元素、on* 事件属性与危险协议链接）
+- `cid:` 内联图片自动替换为可渲染的 blob URL
 - 附件列表展示
 
 ## 电子书
@@ -330,22 +349,46 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
   - 行尾注释
   - 基于 `jsonc-parser`（Microsoft 官方，VSCode 同款）
 
-## ZIP 压缩包
+## 压缩包
 
 - **ZIP** - `.zip`
+- **JAR** - `.jar`（本质为 ZIP，复用 ZIP 渲染器）
+- **TAR** - `.tar`
+- **TAR.GZ / TGZ / GZ** - `.tar.gz`, `.tgz`, `.gz`（单文件 `.gz` 会解出唯一文件）
 
 ### 特性
 
-- 基于 @zip.js/zip.js 解析压缩包目录结构
-- **支持加密 ZIP**（传统 ZipCrypto / AES，自动弹出密码输入框，错误密码可重试 3 次）
-- 左侧树形目录 + 右侧内嵌预览
-- 内嵌预览文本、代码（带高亮）与图片
-- 其他类型可通过"下载"按钮导出为独立文件
+- ZIP 基于 @zip.js/zip.js 解析压缩包目录结构，**支持加密 ZIP**（传统 ZipCrypto / AES，自动弹出密码输入框，错误密码可重试 3 次）
+- TAR 由内置解析器处理（ustar / GNU longname / PAX 扩展头 / base-256 数值），GZIP 由 fflate 按需加载解压
+- 左侧条目列表 + 右侧内嵌预览
+- 内嵌预览任意受支持的格式（文本、代码、图片、Office 等），条目较多时仅渲染前 2000 项
+- `7z` / `rar` 见下方「能力边界」
 
 ## 纯文本
 
 - **TXT** - `.txt`
 - 其他未识别的文本文件
+
+## 思维导图（XMind）
+
+- **XMind** - `.xmind`
+
+### 特性
+
+- 本体为 ZIP 容器：新版读取 `content.json`，旧版（XMind 8）读取 `content.xml`
+- 多画布（sheet）切换
+- 可折叠主题树，支持「全部展开 / 全部折叠」
+- 展示主题标签与备注
+
+## BPMN 流程图
+
+- **BPMN** - `.bpmn`（BPMN 2.0 流程定义）
+
+### 特性
+
+- 基于 bpmn-js Viewer 渲染（动态加载独立 chunk，仅在使用时下载）
+- 导入后自动适配画布尺寸
+- 需要文件包含 BPMN DI（图形信息）才能渲染图形
 
 ## 不支持的格式
 
@@ -354,6 +397,23 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - 文件名和大小
 - 下载按钮
 - 文件类型说明
+
+### 能力边界（纯前端架构限制）
+
+本库是**纯浏览器内**组件库，不具备服务端转换能力（LibreOffice / ImageMagick / FFmpeg 等）。以下格式因此明确不支持，不会以「看似支持」的形式出现：
+
+| 格式 | 原因 |
+|---|---|
+| `doc`、`ppt`（Office 97-2003 二进制） | 前端无可靠解析器；`.ppt` 会检测 OLE 复合文档头并给出「另存为 .pptx」的明确提示 |
+| `wps`、`dps`、`et`、`ett`、`wpt` | WPS 私有/二进制格式，无前端解析方案 |
+| `odt`、`odp`、`ott`、`otp`、`fodt`、`fods` | 除 `ods` 外前端均不可行；本版本未接入 ODF |
+| `dotm`、`dot`、`dotx`、`xlt`、`xltm`、`xlam`、`xla` | Office 模板/宏格式，需旧版二进制解析 |
+| `vsd`、`vsdx` | 需自研 OPC 图形渲染，成本极高 |
+| `wmf`、`emf` | Windows 矢量图元文件，浏览器无渲染器 |
+| `dwg` | 需 WASM 或服务端转换 |
+| `ofd`、`rtf`、`drawio`、`dcm` | 尚未接入（均具备前端可行路径，见后续规划） |
+| `7z`、`rar` | WASM 解压器（如 libarchive.js）的 worker 硬编码同目录 `.wasm`，库打包场景需使用方额外部署静态资源，与本库自包含、按需 chunk 的设计冲突，故本版本未内置；解析时会给出明确提示。请先解压为 ZIP / TAR / GZ 后预览 |
+| `wmv`、`rm`、`rmvb`、`mpeg`、`mpg`、`swf`、`avi`、`flv` | 浏览器无法解码，需服务端转码 |
 
 ## 文件类型检测
 
@@ -381,6 +441,10 @@ Doc Preview 支持多种常见文件格式，React 与 Vue 版本共享类型识
 - `xml` - XML 文件
 - `subtitle` - SRT / VTT / LRC / ELRC / ASS / SSA / TTML 字幕与歌词文件
 - `zip` - ZIP 压缩包
+- `archive` - TAR / TAR.GZ / TGZ / GZ / 7Z / RAR 压缩包
+- `mindmap` - XMind 思维导图
+- `bpmn` - BPMN 2.0 流程图
+- `eml` - RFC 822 / MIME 邮件
 - `text` - 其他文本和代码文件
 - `font` - 字体文件（TTF / OTF / WOFF / WOFF2）
 - `cad` - CAD / 3D 模型（DXF / STL / OBJ / GLTF / GLB）
