@@ -9,7 +9,7 @@ const VUE_EXAMPLE_URL = isDev
   ? 'http://localhost:4802/'
   : 'https://opsbli/doc-preview/vue/'
 
-const base = '/file-preview/docs/'
+const base = '/doc-preview/docs/'
 
 export default defineConfig({
   title: 'Doc Preview',

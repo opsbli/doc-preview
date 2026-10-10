@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 // 演示应用构建配置（用于 GitHub Pages）
 // 部署到 /file-preview/vue/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/file-preview/vue/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/doc-preview/vue/' : '/',
   plugins: [
     vue(),
     viteStaticCopy({
