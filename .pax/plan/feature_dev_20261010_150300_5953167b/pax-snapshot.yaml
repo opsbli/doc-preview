@@ -1,0 +1,118 @@
+# pax-snapshot.yaml
+# 由 pax-orchestrate 初始化（L0）
+# schema: <家族根>/schemas/snapshot.schema.json (version 2.0)
+# 家族运行时根: C:\Users\sam\Documents\skills\pax-skills
+# 上游咨询结论: 本会话「.doc/.ppt 前端预览可行性」答复（轻量 JS 无解，LibreOffice WASM 是唯一保真路线）
+
+meta:
+  version: 2.0
+  created_at: "2026-10-10T15:03:00+08:00"
+  updated_at: "2026-10-10T15:03:00+08:00"
+  skill_lineage:
+    - pax-orchestrate
+    - pax-clarify
+    - pax-plan
+
+goal:
+  statement: >-
+    做一个限时技术验证（约 1-2 小时）：用 @matbee/libreoffice-converter（LibreOffice WASM，约 65MB）
+    在浏览器路径下转换真实 .doc / .ppt 文件为 PDF，验证 4 个 go/no-go 假设：
+    能否正确转换、首次初始化耗时、内存峰值、不加 CJK 字体时中文表现。
+    用户已批准引入该依赖并跑此 spike；验证通过则立项（按 feature_dev 重新编排），不通过则维持现状。
+  success_criteria:
+    - 产出可复现的验证环境（独立 spike 目录，不污染仓库）与测试页
+    - 对用户 RAR 中的真实 验收DOC.doc / 验收ppt.ppt 给出转换结果（成功/失败、产物是否可用）
+    - 记录首次初始化耗时与内存峰值（浏览器 Performance API）
+    - 判断不加 CJK 字体时中文是否缺字（关键：验收文件为中文）
+    - 输出明确的 go / no-go 结论与依据
+
+consensus:
+  required_precision: low
+  dimensions:
+    goal:
+      status: confirmed
+      content: 用户确认跑限时技术验证；通过则立项、不通过维持现状。
+    success_criteria:
+      status: confirmed
+      content: 见 goal.success_criteria（5 项）。
+    constraints:
+      status: confirmed
+      content: >-
+        验证环境放在会话工作台独立目录，不修改仓库（不碰 package.json/lockfile/源码）。
+        依赖经 npm 装进 spike 目录本身。spike 时间盒约 1-2 小时。
+        网络走内置浏览器（项目 AGENTS.md 联网规则与既往一致：chrome_devtools MCP 不可用，改用内置浏览器，已在交付物标注）。
+    authorization:
+      status: confirmed
+      content: 用户批准引入 @matbee/libreoffice-converter（约 65MB 下载）用于本 spike。
+    exceptions:
+      status: not_applicable
+      content: 无。
+    terminology:
+      status: confirmed
+      content: >-
+        go = 转换正确 + 初始化+内存可接受 + 中文可渲染（含或不含字体包）→ 视为值得立项评估；
+        no-go = 转换失败 / 初始化过慢 / 内存不可接受 / 中文必须依赖数百 MB 字体包而用户不接受 → 维持现状。
+  design_tree: []
+  gaps_remaining: []
+
+orchestration:
+  intent:
+    primary: feature_dev
+    secondary: []
+    classification_rationale: >-
+      这是为「新能力（桌面 Office 二进制预览）」做的前置技术验证，非缺陷修复、非数据操作、非纯文档，
+      故 primary=feature_dev。未命中二级意图：spike 本身不涉及既有缺陷（不标 diagnose）、
+      测量的是验证指标而非既有性能退化（不标 performance 的缺陷语义）。
+  risk:
+    irreversibility: 1
+    impact_scope: 1
+    uncertainty: 3
+    coordination_cost: 1
+    total: 6
+    level: low
+    forced_escalation: false
+  diagnose_required: false
+  rationale: 新能力评估，无既有行为可诊断；需要验证多项未经验证的假设（环境、体积、内存、字体）。
+  skip_reason: new_feature_no_prior_behavior
+  route:
+    - clarify
+    - plan
+    - execute
+    - review
+  question_strategy: batch
+  annotations: {}
+
+plan:
+  id: lo-wasm-spike-20261010
+  status: frozen
+  frozen_at: "2026-10-10T15:03:00+08:00"
+  frozen_by: user
+  steps:
+    - id: S1
+      action: 在会话工作台建立独立 spike 目录 spike/lo-wasm，npm 安装 @matbee/libreoffice-converter（约 65MB）
+      rollback: 删除该目录
+    - id: S2
+      action: 检查包内 wasm/data/worker 资源路径与 browser 入口、createWasmPaths 用法
+      rollback: 不适用
+    - id: S3
+      action: 编写极简静态服务器（node:http），设置 COOP: same-origin + COEP: require-corp，托管 wasm 资源、worker.js、样例 .doc/.ppt 与测试页
+      rollback: 删除 spike 目录
+    - id: S4
+      action: 内置浏览器打开测试页，运行转换，采集 初始化耗时 / 内存峰值 / 成功或失败 / 中文字形
+      rollback: 不适用
+    - id: S5
+      action: （如浏览器路径阻塞）降级为 Node 路径验证转换正确性与耗时，明确标注未验证项
+      rollback: 不适用
+    - id: S6
+      action: 产出 go/no-go 报告（写入 spike 目录与交接文件）
+      rollback: 不适用
+  verification_strategy:
+    - step: S1
+      check: 目录内 node_modules 含该包，能 require/import
+    - step: S3-S4
+      check: 页面能跨源隔离初始化；转换样本返回 PDF 且可渲染；记录性能数据
+    - step: S6
+      check: go/no-go 结论与 4 项假设一一对应
+  rollback_strategy:
+    on_failure: 删除 spike 目录即完全回滚（仓库未改动，零残留）
+    default: 不写仓库、不引入仓库依赖，直至用户批准立项
